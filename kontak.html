@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontak - UPCADEMI</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .kontak-page {
+            padding: 60px 0;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .kontak-page h1 {
+            color: var(--navy);
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .kontak-page .subtitle {
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .kontak-card {
+            background: var(--white);
+            padding: 20px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: 0.3s;
+        }
+        .kontak-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+        .kontak-card .icon {
+            width: 50px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .kontak-card .icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: block;
+        }
+        .kontak-card .info {
+            flex: 1;
+        }
+        .kontak-card .info .label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .kontak-card .info .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 2px;
+        }
+        .kontak-card .info .value a {
+            color: var(--navy);
+            text-decoration: none;
+        }
+        .kontak-card .info .value a:hover {
+            color: var(--red);
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 32px;
+            background: var(--navy);
+            color: var(--white);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            background: var(--navy-light);
+            transform: translateY(-2px);
+        }
+        .tombol-aksi {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .tombol-aksi a {
+            padding: 12px 32px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tombol-aksi .wa {
+            background: #25D366;
+        }
+        .tombol-aksi .wa:hover {
+            background: #1DA851;
+            transform: scale(1.05);
+        }
+        .tombol-aksi .tt {
+            background: #000000;
+        }
+        .tombol-aksi .tt:hover {
+            background: #333;
+            transform: scale(1.05);
+        }
+        @media (max-width: 480px) {
+            .kontak-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            .kontak-card .icon img {
+                margin: 0 auto;
+            }
+            .tombol-aksi {
+                flex-direction: column;
+            }
+            .tombol-aksi a {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="UPCADEMI" style="height: 40px;">
+                <span>UPCADEMI</span>
+            </a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">Beranda</a>
+                <a href="packages.html">Paket</a>
+                <a href="leaderboard.html">Peringkat</a>
+                <div id="navbarLogin">
+                    <!-- Diisi JavaScript -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== KONTEN KONTAK ===== -->
+    <section class="kontak-page">
+        <div class="container">
+            <h1>📞 Kontak Kami</h1>
+            <p class="subtitle">Hubungi kami melalui WhatsApp atau media sosial di bawah ini.</p>
+
+            <!-- WhatsApp -->
+            <div class="kontak-card">
+                <div class="icon">
+                    <img src="assets/images/whatsapp.jpg" alt="WhatsApp">
+                </div>
+                <div class="info">
+                    <div class="label">WhatsApp</div>
+                    <div class="value">
+                        <a href="https://wa.me/628123355227?text=Halo%20UPCADEMI%2C%20saya%20mau%20tanya%20tentang%20tryout" target="_blank">
+                            0812-3335-5227
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TikTok -->
+            <div class="kontak-card">
+                <div class="icon">
+                    <img src="assets/images/tiktok.jpg" alt="TikTok">
+                </div>
+                <div class="info">
+                    <div class="label">TikTok</div>
+                    <div class="value">
+                        <a href="https://www.tiktok.com/@upcademi" target="_blank">
+                            @upcademi
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Akses Cepat -->
+            <div class="tombol-aksi">
+                <a href="https://wa.me/628123355227?text=Halo%20UPCADEMI%2C%20saya%20mau%20tanya%20tentang%20tryout" target="_blank" class="wa">
+                    💬 Chat WhatsApp
+                </a>
+                <a href="https://www.tiktok.com/@upcademi" target="_blank" class="tt">
+                    🎵 Kunjungi TikTok
+                </a>
+            </div>
+
+            <a href="index.html" class="btn-back">← Kembali ke Beranda</a>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="tentang.html">Tentang Kami</a>
+                <a href="kontak.html">Kontak</a>
+                <a href="privasi.html">Kebijakan Privasi</a>
+                <a href="syarat.html">Syarat & Ketentuan</a>
+            </div>
+            <div class="copyright">&copy; 2026 UPCADEMI. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // ===== UPDATE NAVBAR =====
+        function updateNavbar() {
+            const container = document.getElementById('navbarLogin');
+            if (!container) return;
+
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            const isLoggedIn = localStorage.getItem('userEmail') !== null;
+
+            if (isLoggedIn) {
+                if (isAdmin) {
+                    container.innerHTML = `
+                        <a href="dashboard-admin.html" style="background: rgba(255,255,255,0.15);">Admin</a>
+                        <a href="#" onclick="logout()" class="btn-login">Logout</a>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <a href="dashboard-user.html" style="background: rgba(255,255,255,0.15);">Dashboard</a>
+                        <a href="#" onclick="logout()" class="btn-login">Logout</a>
+                    `;
+                }
+            } else {
+                container.innerHTML = `
+                    <a href="register.html" class="btn-register">Daftar</a>
+                    <a href="login.html" class="btn-login">Login</a>
+                `;
+            }
+        }
+
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                localStorage.removeItem('isAdmin');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
+                localStorage.setItem('logoutEvent', Date.now());
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbar();
+        });
+    </script>
+
+</body>
+</html>

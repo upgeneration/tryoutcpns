@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPCADEMI - Tryout Online</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="UPCADEMI" style="height: 40px;">
+                <span>UPCADEMI</span>
+            </a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">Beranda</a>
+                <a href="packages.html">Paket</a>
+                <a href="leaderboard.html">Peringkat</a>
+                <div id="navbarLogin"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="container">
+            <h1>Siap Ujian? <span>Waktunya Tryout!</span></h1>
+            <p>Pilih paket tryout favoritmu, kerjakan soal dengan sistem CAT, dan lihat analisis skor secara instan.</p>
+            <div class="hero-buttons">
+                <a href="packages.html" class="btn-primary">Lihat Paket Tryout</a>
+                <a href="login.html" class="btn-secondary">Login Sekarang</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PAKET ===== -->
+    <section class="packages" id="packages">
+        <div class="container">
+            <h2>Pilihan Paket Tryout</h2>
+            <p class="subtitle">Pilih paket yang sesuai dengan kebutuhan belajarmu</p>
+            <div class="package-grid" id="packageGrid"></div>
+        </div>
+    </section>
+
+    <!-- ===== KOMENTAR ===== -->
+    <section class="testimonials" id="testimoniSection">
+        <div class="container">
+            <h2>💬 Apa Kata Mereka?</h2>
+            <p class="subtitle" style="text-align:center; color:var(--text-gray); margin-bottom:30px;">
+                Testimoni dari pengguna yang sudah merasakan manfaat tryout UPCADEMI
+            </p>
+
+            <div id="formKomentarWrapper" style="max-width:600px; margin:0 auto 40px; background:var(--white); padding:24px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+                <div id="komentarLoginWarning" style="text-align:center; padding:20px 0;">
+                    <div style="font-size:40px; margin-bottom:12px;">🔒</div>
+                    <p style="color:var(--text-gray); margin-bottom:12px;">
+                        Silakan <a href="login.html" style="color:var(--red); font-weight:700;">Login</a> 
+                        atau <a href="register.html" style="color:var(--red); font-weight:700;">Daftar</a> 
+                        untuk memberikan testimoni.
+                    </p>
+                </div>
+
+                <div id="komentarFormIsi" style="display:none;">
+                    <h4 style="color:var(--navy); margin-bottom:12px;">📝 Kirim Testimoni</h4>
+                    <form id="formKomentar" onsubmit="return submitKomentar(event)">
+                        <div style="margin-bottom:12px;">
+                            <input type="text" id="komentarNama" placeholder="Nama Anda" required style="width:100%; padding:10px 14px; border:2px solid #E0E0E0; border-radius:8px; font-size:14px;">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <textarea id="komentarText" placeholder="Tulis pengalaman Anda..." required style="width:100%; padding:10px 14px; border:2px solid #E0E0E0; border-radius:8px; font-size:14px; min-height:80px;"></textarea>
+                        </div>
+                        <button type="submit" style="padding:10px 32px; background:var(--red); color:var(--white); border:none; border-radius:8px; font-weight:700; cursor:pointer;">📤 Kirim Testimoni</button>
+                    </form>
+                    <div id="komentarAlert" style="margin-top:12px; display:none; padding:10px 16px; border-radius:8px;"></div>
+                </div>
+            </div>
+
+            <div id="daftarKomentar" style="max-width:700px; margin:0 auto;"></div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="tentang.html">Tentang Kami</a>
+                <a href="kontak.html">Kontak</a>
+                <a href="privasi.html">Kebijakan Privasi</a>
+                <a href="syarat.html">Syarat & Ketentuan</a>
+            </div>
+            <div class="copyright">&copy; 2026 UPCADEMI. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // ===== RENDER PAKET DARI LOCALSTORAGE =====
+        function renderPaketBeranda() {
+            const container = document.getElementById('packageGrid');
+            if (!container) return;
+
+            const paket = JSON.parse(localStorage.getItem('paketUpcademi') || '[]');
+
+            if (paket.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-gray);">
+                        📭 Belum ada paket tryout. Silakan tambahkan paket di dashboard admin.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = paket.map((item, index) => {
+                const isPopular = index === 0 ? 'popular' : '';
+                const badgePopular = index === 0 ? '<div class="badge-popular">Paling Laris</div>' : '';
+                const features = item.features ? item.features.split(',').map(f => `<li>${f.trim()}</li>`).join('') : '';
+
+                return `
+                    <div class="package-card ${isPopular}">
+                        ${badgePopular}
+                        <div class="package-name">${item.name}</div>
+                        <div class="package-price">Rp${item.price} <small>/paket</small></div>
+                        <p class="package-desc">${item.description || 'Paket tryout terbaik untuk persiapan ujian'}</p>
+                        <ul class="package-features">
+                            ${features}
+                            <li>Akses ${item.duration}</li>
+                        </ul>
+                        <a href="checkout.html?paket=${item.id}" class="btn-buy">Beli Sekarang</a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== NAVBAR =====
+        function updateNavbar() {
+            const container = document.getElementById('navbarLogin');
+            if (!container) return;
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            const isLoggedIn = localStorage.getItem('userEmail') !== null;
+
+            if (isLoggedIn) {
+                if (isAdmin) {
+                    container.innerHTML = `
+                        <a href="dashboard-admin.html" style="background: rgba(255,255,255,0.15);">Admin</a>
+                        <a href="#" onclick="logout()" class="btn-login">Logout</a>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <a href="dashboard-user.html" style="background: rgba(255,255,255,0.15);">Dashboard</a>
+                        <a href="#" onclick="logout()" class="btn-login">Logout</a>
+                    `;
+                }
+            } else {
+                container.innerHTML = `
+                    <a href="register.html" class="btn-register">Daftar</a>
+                    <a href="login.html" class="btn-login">Login</a>
+                `;
+            }
+        }
+
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                localStorage.removeItem('isAdmin');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbar();
+            renderPaketBeranda();
+        });
+    </script>
+</body>
+</html>
