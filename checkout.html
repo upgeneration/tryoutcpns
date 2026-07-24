@@ -293,16 +293,8 @@
                         <p style="color:var(--text-gray); font-size:14px; margin-bottom:12px;">
                             Scan QR Code di bawah menggunakan aplikasi mobile banking atau e-wallet (OVO, DANA, ShopeePay, dll.)
                         </p>
-                        <div style="text-align:center; padding:16px; background:white; border-radius:12px; border:2px dashed #E0E0E0;">
-                            <div style="font-size:14px; color:var(--text-gray); margin-bottom:8px;">
-                                ⬇️ Tempatkan gambar QRIS di sini
-                            </div>
-                            <div style="background:#f5f5f5; padding:30px; border-radius:8px; display:inline-block;">
-                                <span style="font-size:48px;">📷</span>
-                                <p style="font-size:12px; color:var(--text-gray); margin-top:8px;">
-                                    (Upload file QRIS Anda di <code>assets/images/qris.png</code>)
-                                </p>
-                            </div>
+                        <div style="text-align:center; padding:16px; background:white; border-radius:12px; border:2px dashed #E0E0E0;" id="qrisContainer">
+                            <img src="assets/images/qris.png" alt="QRIS UPCADEMI" style="max-width:220px; width:100%; border-radius:8px;" onerror="qrisImageMissing()">
                         </div>
                         <p style="color:var(--text-gray); font-size:12px; margin-top:8px; text-align:center;">
                             Total: <strong id="qrisAmount" style="color:var(--red);">Rp199.000</strong>
@@ -418,6 +410,23 @@
     document.getElementById('totalPrice').textContent = 'Rp' + (data.price || 0).toLocaleString('id-ID');
     document.getElementById('instructionAmount').textContent = 'Rp' + (data.price || 0).toLocaleString('id-ID');
     document.getElementById('qrisAmount').textContent = 'Rp' + (data.price || 0).toLocaleString('id-ID');
+
+    // Tampilkan pesan placeholder kalau file assets/images/qris.png belum diupload
+    function qrisImageMissing() {
+        const container = document.getElementById('qrisContainer');
+        if (!container) return;
+        container.innerHTML = `
+            <div style="font-size:14px; color:var(--text-gray); margin-bottom:8px;">
+                ⬇️ Tempatkan gambar QRIS di sini
+            </div>
+            <div style="background:#f5f5f5; padding:30px; border-radius:8px; display:inline-block;">
+                <span style="font-size:48px;">📷</span>
+                <p style="font-size:12px; color:var(--text-gray); margin-top:8px;">
+                    (Upload file QRIS Anda di <code>assets/images/qris.png</code>)
+                </p>
+            </div>
+        `;
+    }
 
     // ===== PREVIEW BUKTI =====
     function previewBukti(input) {
