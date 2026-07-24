@@ -226,7 +226,6 @@
                             <th>Nama</th>
                             <th style="width:150px;">Paket</th>
                             <th style="width:100px; text-align:center;">Skor</th>
-                            <th style="width:120px; text-align:center;">Status</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboardBody">
@@ -320,8 +319,7 @@
             leaderboardData = leaderboardData.map((item, index) => {
                 return {
                     ...item,
-                    rank: index + 1,
-                    status: item.skor >= 80 ? 'Lulus' : item.skor >= 60 ? 'Perlu Belajar' : 'Perlu Bimbingan'
+                    rank: index + 1
                 };
             });
 
@@ -336,7 +334,7 @@
             if (pageData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5">
+                        <td colspan="4">
                             <div class="empty-state">
                                 <div class="icon">📊</div>
                                 <p>Belum ada data peringkat. Ayo kerjakan tryout!</p>
@@ -349,9 +347,6 @@
                     const rankClass = item.rank === 1 ? 'rank-1' : 
                                      item.rank === 2 ? 'rank-2' : 
                                      item.rank === 3 ? 'rank-3' : 'rank-other';
-
-                    const scoreClass = item.skor >= 80 ? 'high' : 
-                                      item.skor >= 60 ? 'medium' : 'low';
 
                     const initials = (item.userName || 'U').split(' ').map(n => n[0]).join('').slice(0, 2);
 
@@ -369,9 +364,6 @@
                             <td><span class="user-paket">${item.paket}</span></td>
                             <td style="text-align:center; font-weight:700; color:var(--navy);">
                                 ${item.skor} / ${item.total || item.skor}
-                            </td>
-                            <td style="text-align:center;">
-                                <span class="badge-score ${scoreClass}">${item.status}</span>
                             </td>
                         </tr>
                     `;
