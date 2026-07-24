@@ -36,7 +36,7 @@
             <p>Pilih paket tryout favoritmu, kerjakan soal dengan sistem CAT, dan lihat analisis skor secara instan.</p>
             <div class="hero-buttons">
                 <a href="packages.html" class="btn-primary">Lihat Paket Tryout</a>
-                <a href="login.html" class="btn-secondary">Login Sekarang</a>
+                <a href="login.html" class="btn-secondary" id="heroLoginBtn">Login Sekarang</a>
             </div>
         </div>
     </section>
@@ -145,6 +145,9 @@
             if (!container) return;
             const isAdmin = localStorage.getItem('isAdmin') === 'true';
             const isLoggedIn = localStorage.getItem('userEmail') !== null;
+
+            const heroLoginBtn = document.getElementById('heroLoginBtn');
+            if (heroLoginBtn) heroLoginBtn.style.display = isLoggedIn ? 'none' : '';
 
             if (isLoggedIn) {
                 if (isAdmin) {
