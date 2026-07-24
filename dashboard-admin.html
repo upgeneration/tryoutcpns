@@ -694,7 +694,7 @@
                 return;
             }
             tbody.innerHTML = paket.map((item, index) => {
-                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>Rp${item.price}</td><td>${item.duration}</td><td>${item.waktuPengerjaan || 110} menit</td><td><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
+                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>Rp${item.price}</td><td>${item.duration}</td><td>${item.waktuPengerjaan || 110} menit</td><td><button class="btn-action view" onclick="window.open('preview.html?paket=${item.id}', '_blank')">👁️ Preview</button><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
             }).join('');
             const selectPaket = document.getElementById('paketSoal');
             if (selectPaket) {

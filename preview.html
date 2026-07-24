@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review Soal - UPCADEMI</title>
+    <title>Preview Paket - UPCADEMI</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- KaTeX: render notasi matematika (rumus) langsung dari teks, tanpa gambar -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
@@ -13,7 +13,7 @@
         * { box-sizing: border-box; }
         body { background: #f0f2f5; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-        .review-navbar {
+        .preview-navbar {
             background: var(--navy);
             padding: 10px 0;
             position: sticky;
@@ -21,7 +21,7 @@
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
-        .review-navbar .container {
+        .preview-navbar .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
@@ -31,10 +31,11 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .review-navbar .logo { font-size: 20px; font-weight: 700; color: var(--white); }
-        .review-navbar .logo span { color: var(--red-light); }
-        .review-navbar .review-info { color: var(--white); font-size: 14px; display: flex; align-items: center; gap: 12px; }
-        .review-navbar .btn-close-review {
+        .preview-navbar .logo { font-size: 20px; font-weight: 700; color: var(--white); }
+        .preview-navbar .logo span { color: var(--red-light); }
+        .preview-navbar .preview-info { color: var(--white); font-size: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .preview-navbar .badge-preview { background: #FF9800; color: var(--white); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .preview-navbar .btn-close-preview {
             padding: 8px 18px;
             background: var(--red);
             color: var(--white);
@@ -45,9 +46,9 @@
             font-size: 13px;
             transition: 0.3s;
         }
-        .review-navbar .btn-close-review:hover { background: var(--red-dark); }
+        .preview-navbar .btn-close-preview:hover { background: var(--red-dark); }
 
-        .review-container {
+        .preview-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 16px;
@@ -57,7 +58,7 @@
             min-height: calc(100vh - 70px);
         }
 
-        .review-sidebar {
+        .preview-sidebar {
             background: var(--white);
             border-radius: 12px;
             padding: 16px;
@@ -66,86 +67,44 @@
             position: sticky;
             top: 80px;
         }
-        .review-sidebar .info { text-align: center; padding-bottom: 12px; border-bottom: 2px solid var(--gray-bg); margin-bottom: 12px; }
-        .review-sidebar .info .score { font-size: 28px; font-weight: 800; color: var(--navy); }
-        .review-sidebar .info .label { font-size: 12px; color: var(--text-gray); }
-        .review-sidebar .info .paket-name { font-size: 13px; color: var(--text-gray); margin-top: 4px; }
+        .preview-sidebar .info { text-align: center; padding-bottom: 12px; border-bottom: 2px solid var(--gray-bg); margin-bottom: 12px; }
+        .preview-sidebar .info .total { font-size: 24px; font-weight: 800; color: var(--navy); }
+        .preview-sidebar .info .label { font-size: 12px; color: var(--text-gray); }
+        .preview-sidebar .info .paket-name { font-size: 13px; color: var(--text-gray); margin-top: 4px; font-weight: 600; }
 
         .question-numbers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 12px; }
         .q-num { padding: 8px 0; text-align: center; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s; border: 2px solid #E0E0E0; background: var(--white); color: var(--text-dark); }
         .q-num:hover { border-color: var(--navy); transform: scale(1.05); }
         .q-num.active { border-color: var(--navy); background: var(--navy); color: var(--white); box-shadow: 0 2px 8px rgba(26,35,126,0.3); }
-        .q-num.correct { background: var(--green-light); border-color: var(--green); color: var(--white); }
-        .q-num.correct.active { background: var(--navy); border-color: var(--navy); }
-        .q-num.wrong { background: #EF9A9A; border-color: var(--red); color: var(--white); }
-        .q-num.wrong.active { background: var(--navy); border-color: var(--navy); }
-        .q-num.empty { background: var(--white); border-color: #E0E0E0; }
+        .q-num.no-gambar-missing { border-color: #FF9800; }
 
-        .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 2px solid var(--gray-bg); font-size: 11px; }
-        .legend-item { display: flex; align-items: center; gap: 4px; }
-        .legend-item .box { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #ccc; flex-shrink: 0; }
-        .legend-item .box.correct { background: var(--green-light); border-color: var(--green); }
-        .legend-item .box.wrong { background: #EF9A9A; border-color: var(--red); }
-        .legend-item .box.empty { background: var(--white); border-color: #E0E0E0; }
-
-        .review-content { background: var(--white); border-radius: 12px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); min-height: 500px; }
+        .preview-content { background: var(--white); border-radius: 12px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); min-height: 500px; }
         .question-panel { display: none; animation: fadeIn 0.3s ease; }
         .question-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .question-panel .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--gray-bg); flex-wrap: wrap; gap: 8px; }
         .question-panel .question-number { font-weight: 700; color: var(--navy); font-size: 18px; }
-        .question-panel .question-status { font-size: 13px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
-        .question-panel .question-status.status-correct { background: #E8F5E9; color: var(--green); }
-        .question-panel .question-status.status-wrong { background: #FFEBEE; color: var(--red); }
-        .question-panel .question-status.status-empty { background: var(--gray-bg); color: var(--text-gray); }
+        .question-panel .question-subtes { font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 600; background: #E8EAF6; color: var(--navy); }
         .question-panel .question-text { font-size: 17px; line-height: 1.8; margin-bottom: 24px; color: var(--text-dark); }
         .question-panel .question-text img { max-width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid #E0E0E0; }
 
         .options { display: flex; flex-direction: column; gap: 10px; }
         .options.options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .options.options-grid .option-row { flex-direction: column; text-align: center; }
-        .options.options-grid .option-img-large { width: 100%; max-width: 220px; max-height: 200px; object-fit: contain; border-radius: 8px; border: 1px solid #E0E0E0; margin-top: 8px; }
-        @media (max-width: 600px) { .options.options-grid .option-img-large { max-height: 140px; } }
-        .options .option-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 15px; line-height: 1.5; }
-        .options .option-row .option-label { font-weight: 700; flex-shrink: 0; }
-        .options .option-row.user-correct { border-color: var(--green); background: #E8F5E9; }
-        .options .option-row.user-wrong { border-color: var(--red); background: #FFEBEE; }
-        .options .option-row.correct-answer { border-color: var(--green); background: #E8F5E9; }
-        .options .tag { margin-left: auto; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 12px; white-space: nowrap; }
-        .options .tag.tag-user { background: var(--navy); color: var(--white); }
-        .options .tag.tag-correct { background: var(--green); color: var(--white); }
+        .options label { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 15px; line-height: 1.5; }
+        .options label:hover { border-color: var(--navy); background: #F5F7FA; }
+        .options label:has(input:checked) { border-color: var(--navy); background: #E8EAF6; }
+        .options.options-grid label { flex-direction: column; text-align: center; padding: 14px; }
+        .options .option-img-large { width: 100%; max-width: 220px; max-height: 200px; object-fit: contain; border-radius: 8px; border: 1px solid #E0E0E0; margin-top: 8px; }
+        .options .option-label { font-weight: 700; }
 
-        .pembahasan-box {
-            margin-top: 24px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid var(--gray-bg);
-        }
-        .pembahasan-toggle {
-            width: 100%;
-            padding: 14px 18px;
-            background: var(--gray-bg);
-            border: none;
-            text-align: left;
-            font-weight: 700;
-            color: var(--navy);
-            cursor: pointer;
-            font-size: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .pembahasan-box { margin-top: 24px; border-radius: 10px; overflow: hidden; border: 2px solid var(--gray-bg); }
+        .pembahasan-toggle { width: 100%; padding: 14px 18px; background: var(--gray-bg); border: none; text-align: left; font-weight: 700; color: var(--navy); cursor: pointer; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
         .pembahasan-toggle:hover { background: #E8EAF6; }
-        .pembahasan-body {
-            display: none;
-            padding: 18px;
-            font-size: 14px;
-            line-height: 1.8;
-            color: var(--text-dark);
-        }
+        .pembahasan-body { display: none; padding: 18px; font-size: 14px; line-height: 1.8; color: var(--text-dark); }
         .pembahasan-body.show { display: block; }
         .pembahasan-body img { max-width: 100%; border-radius: 8px; margin: 8px 0; border: 1px solid #E0E0E0; }
+        .pembahasan-body .jawaban-benar-label { font-weight: 700; color: var(--green); margin-bottom: 8px; display: block; }
 
         .nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--gray-bg); gap: 12px; flex-wrap: wrap; }
         .btn-nav { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 14px; }
@@ -158,99 +117,131 @@
         .mobile-toggle { display: none; margin-bottom: 12px; }
         .mobile-toggle button { padding: 8px 16px; border: 2px solid var(--navy); border-radius: 8px; background: transparent; color: var(--navy); font-weight: 600; cursor: pointer; font-size: 13px; width: 100%; }
 
+        .empty-preview { text-align: center; padding: 60px 20px; color: var(--text-gray); }
+        .empty-preview .icon { font-size: 48px; margin-bottom: 12px; }
+
         @media (max-width: 1024px) {
-            .review-container { grid-template-columns: 1fr; gap: 12px; padding: 12px; }
-            .review-sidebar { position: static; display: none; }
-            .review-sidebar.mobile-show { display: block; }
-            .review-content { padding: 16px; }
+            .preview-container { grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+            .preview-sidebar { position: static; display: none; }
+            .preview-sidebar.mobile-show { display: block; }
+            .preview-content { padding: 16px; }
             .question-numbers { grid-template-columns: repeat(8, 1fr); }
             .mobile-toggle { display: block; }
         }
         @media (max-width: 480px) {
-            .review-content { padding: 12px; }
+            .preview-content { padding: 12px; }
             .question-panel .question-text { font-size: 15px; }
-            .options .option-row { font-size: 14px; padding: 10px 12px; }
+            .options label { font-size: 14px; padding: 10px 12px; }
             .question-numbers { grid-template-columns: repeat(6, 1fr); gap: 4px; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="review-navbar">
+    <nav class="preview-navbar">
         <div class="container">
             <div class="logo">UPCADEMI<span>.com</span></div>
-            <div class="review-info">
-                📖 Mode Review
-                <button class="btn-close-review" onclick="window.location.href='dashboard-user.html'">← Kembali ke Dashboard</button>
+            <div class="preview-info">
+                <span class="badge-preview">👁️ MODE PREVIEW ADMIN</span>
+                <button class="btn-close-preview" onclick="window.location.href='dashboard-admin.html'">← Kembali ke Kelola Soal</button>
             </div>
         </div>
     </nav>
 
-    <div class="review-container">
+    <div class="preview-container">
         <div class="mobile-toggle">
             <button onclick="toggleMobileSidebar()">📋 Daftar Soal</button>
         </div>
 
-        <div class="review-sidebar mobile-show" id="sidebar">
+        <div class="preview-sidebar mobile-show" id="sidebar">
             <div class="info">
-                <div class="score" id="scoreDisplay">0 / 0</div>
-                <div class="label">Skor Tryout</div>
-                <div class="paket-name" id="paketName">Tryout</div>
+                <div class="total" id="totalDisplay">0</div>
+                <div class="label">Total Soal</div>
+                <div class="paket-name" id="paketName">Paket</div>
             </div>
             <div style="font-size:13px; font-weight:600; color:var(--text-gray); margin-bottom:6px;">Nomor Soal</div>
             <div class="question-numbers" id="questionNumbers"></div>
-            <div class="legend">
-                <span class="legend-item"><span class="box correct"></span> Benar</span>
-                <span class="legend-item"><span class="box wrong"></span> Salah</span>
-                <span class="legend-item"><span class="box empty"></span> Kosong</span>
-            </div>
         </div>
 
-        <div class="review-content">
+        <div class="preview-content">
             <div id="questionContainer"></div>
-            <div class="nav-buttons">
+            <div class="nav-buttons" id="navButtons">
                 <button type="button" class="btn-nav prev" onclick="navigateQuestion(-1)">⬅ Sebelumnya</button>
                 <button type="button" class="btn-nav next" onclick="navigateQuestion(1)">Selanjutnya ➡</button>
             </div>
         </div>
     </div>
 
-    <script src="js/script.js"></script>
     <script>
     (function() {
         // ============================================================
-        // 1. AMBIL DATA ATTEMPT DARI RIWAYAT (hasilTryout)
+        // 1. AMBIL SOAL LANGSUNG DARI BANK SOAL (bukan dari attempt/riwayat)
         // ============================================================
 
         const urlParams = new URLSearchParams(window.location.search);
-        const attemptId = urlParams.get('attempt');
+        const paketId = urlParams.get('paket');
 
-        const semuaHasil = JSON.parse(localStorage.getItem('hasilTryout') || '[]');
-        const attempt = semuaHasil.find(item => item.attemptId === attemptId);
+        const semuaSoal = JSON.parse(localStorage.getItem('soalUpcademi') || '[]');
+        const semuaPaket = JSON.parse(localStorage.getItem('paketUpcademi') || '[]');
 
-        if (!attempt || !attempt.detail || attempt.detail.length === 0) {
-            alert('⚠️ Data review tidak ditemukan. Silakan pilih dari riwayat tryout Anda.');
-            window.location.href = 'dashboard-user.html';
+        let paketNama = '';
+        const paket = semuaPaket.find(p => String(p.id) === String(paketId));
+        if (paket) paketNama = paket.name;
+
+        let questionsRaw = [];
+        if (paketNama) {
+            questionsRaw = semuaSoal.filter(s => s.paket && s.paket.toLowerCase().trim() === paketNama.toLowerCase().trim());
+        }
+
+        document.getElementById('paketName').textContent = paketNama || 'Paket tidak ditemukan';
+
+        if (questionsRaw.length === 0) {
+            document.getElementById('totalDisplay').textContent = '0';
+            document.getElementById('navButtons').style.display = 'none';
+            document.getElementById('questionContainer').innerHTML = `
+                <div class="empty-preview">
+                    <div class="icon">📭</div>
+                    <p>Belum ada soal untuk paket ini. Silakan tambahkan soal dulu di tab Kelola Soal.</p>
+                </div>
+            `;
             return;
         }
 
-        const questions = attempt.detail;
+        // Normalisasi (mengikuti logika yang sama dengan exam.html)
+        const optionLabels = ['A', 'B', 'C', 'D', 'E'];
+        const questions = questionsRaw
+            .map((q, i) => {
+                const opt = q.opsiA ? [q.opsiA, q.opsiB, q.opsiC, q.opsiD, q.opsiE] : (q.options || ['-','-','-','-','-']);
+                let correctIdx = 0;
+                if (q.jawaban !== undefined && q.jawaban !== null) {
+                    const idx = optionLabels.indexOf((q.jawaban || '').toUpperCase());
+                    if (idx !== -1) correctIdx = idx;
+                } else if (q.correct !== undefined) {
+                    correctIdx = q.correct;
+                }
+                return {
+                    number: q.nomor || i + 1,
+                    subtes: q.subtes || '',
+                    text: q.soal || q.text || 'Soal tidak tersedia',
+                    image: q.gambar || q.image || '',
+                    options: opt,
+                    optionImages: q.optionImages || [q.gambarOpsiA || null, q.gambarOpsiB || null, q.gambarOpsiC || null, q.gambarOpsiD || null, q.gambarOpsiE || null],
+                    correctLabel: optionLabels[correctIdx],
+                    correctText: opt[correctIdx],
+                    pembahasan: q.pembahasan || '',
+                    pembahasanImage: q.pembahasanGambar || ''
+                };
+            })
+            .sort((a, b) => (parseInt(a.number, 10) || 0) - (parseInt(b.number, 10) || 0));
+
         const totalQuestions = questions.length;
         let currentQuestion = 0;
 
-        document.getElementById('scoreDisplay').textContent = (attempt.benar || 0) + ' / ' + (attempt.total || totalQuestions);
-        document.getElementById('paketName').textContent = attempt.paket || 'Tryout';
+        document.getElementById('totalDisplay').textContent = totalQuestions;
 
         // ============================================================
         // 2. RENDER SOAL
         // ============================================================
-
-        const optionLabels = ['A', 'B', 'C', 'D', 'E'];
-
-        function getStatus(q) {
-            if (q.jawabanUser === null || q.jawabanUser === undefined) return 'empty';
-            return q.jawabanUser === q.correct ? 'correct' : 'wrong';
-        }
 
         function renderQuestions() {
             const container = document.getElementById('questionContainer');
@@ -261,53 +252,42 @@
                 panel.className = 'question-panel' + (index === 0 ? ' active' : '');
                 panel.dataset.index = index;
 
-                const status = getStatus(q);
-                const statusText = status === 'correct' ? '✅ Benar' : status === 'wrong' ? '❌ Salah' : '⬜ Tidak Dijawab';
-                const statusClass = status === 'correct' ? 'status-correct' : status === 'wrong' ? 'status-wrong' : 'status-empty';
+                const hasImageOptions = q.optionImages && q.optionImages.some(img => img);
 
                 let optionsHTML = '';
-                const hasImageOptions = q.optionImages && q.optionImages.some(img => img);
-                (q.options || []).forEach((opt, oi) => {
-                    const isUserAns = q.jawabanUser === oi;
-                    const isCorrectAns = q.correct === oi;
-                    let rowClass = '';
-                    let tag = '';
-                    if (isUserAns && isCorrectAns) { rowClass = 'user-correct'; tag = '<span class="tag tag-user">Jawaban Anda ✓</span>'; }
-                    else if (isUserAns && !isCorrectAns) { rowClass = 'user-wrong'; tag = '<span class="tag tag-user">Jawaban Anda</span>'; }
-                    else if (!isUserAns && isCorrectAns) { rowClass = 'correct-answer'; tag = '<span class="tag tag-correct">Kunci Jawaban</span>'; }
-
+                q.options.forEach((opt, oi) => {
                     let optImg = '';
                     if (q.optionImages && q.optionImages[oi]) {
                         optImg = hasImageOptions
                             ? `<img src="${q.optionImages[oi]}" class="option-img-large">`
                             : `<br><img src="${q.optionImages[oi]}" style="max-width:120px; border-radius:6px; border:1px solid #E0E0E0; margin-top:4px;">`;
                     }
-
                     optionsHTML += `
-                        <div class="option-row ${rowClass}">
-                            <span class="option-label">${optionLabels[oi]}.</span>
-                            <span>${opt} ${optImg}</span>
-                            ${tag}
-                        </div>
+                        <label>
+                            <input type="radio" name="preview-q${index}">
+                            <span><span class="option-label">${optionLabels[oi]}.</span> ${opt} ${optImg}</span>
+                        </label>
                     `;
                 });
 
-                const imageHTML = q.image ? `<img src="${q.image}" style="max-width:100%; border-radius:8px; margin:12px 0; border:1px solid #E0E0E0;" onerror="this.style.display='none'">` : '';
-                const pembahasanImgHTML = q.pembahasanImage ? `<img src="${q.pembahasanImage}" style="max-width:100%; border-radius:8px; margin:8px 0; border:1px solid #E0E0E0;">` : '';
+                const imageHTML = q.image ? `<img src="${q.image}" onerror="this.style.display='none'">` : '';
+                const pembahasanImgHTML = q.pembahasanImage ? `<img src="${q.pembahasanImage}">` : '';
+                const subtesBadge = q.subtes ? `<span class="question-subtes">${q.subtes}</span>` : '';
 
                 panel.innerHTML = `
                     <div class="question-header">
-                        <span class="question-number">Soal ${q.number || index + 1} dari ${totalQuestions}</span>
-                        <span class="question-status ${statusClass}">${statusText}</span>
+                        <span class="question-number">Soal ${q.number} dari ${totalQuestions}</span>
+                        ${subtesBadge}
                     </div>
-                    <div class="question-text">${q.text || ''}${imageHTML}</div>
+                    <div class="question-text">${q.text}${imageHTML}</div>
                     <div class="options${hasImageOptions ? ' options-grid' : ''}">${optionsHTML}</div>
                     <div class="pembahasan-box">
                         <button type="button" class="pembahasan-toggle" onclick="togglePembahasan(${index})">
-                            <span>💡 Lihat Pembahasan</span>
+                            <span>💡 Lihat Kunci Jawaban & Pembahasan</span>
                             <span id="pembahasanArrow${index}">▼</span>
                         </button>
                         <div class="pembahasan-body" id="pembahasanBody${index}">
+                            <span class="jawaban-benar-label">✅ Kunci Jawaban: ${q.correctLabel}. ${q.correctText}</span>
                             ${q.pembahasan || 'Tidak ada pembahasan.'}
                             ${pembahasanImgHTML}
                         </div>
@@ -318,7 +298,6 @@
 
             updateQuestionNumbers();
 
-            // Render notasi matematika (KaTeX) pada semua soal, opsi, dan pembahasan
             if (window.renderMathInElement) {
                 renderMathInElement(container, {
                     delimiters: [
@@ -359,7 +338,7 @@
             panels[currentQuestion].classList.add('active');
             numbers[currentQuestion].classList.add('active');
 
-            document.querySelector('.review-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.querySelector('.preview-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
         };
 
         window.goToQuestion = function(index) {
@@ -380,9 +359,9 @@
             container.innerHTML = '';
             questions.forEach((q, i) => {
                 const num = document.createElement('div');
-                num.className = 'q-num ' + getStatus(q);
+                num.className = 'q-num';
                 if (i === currentQuestion) num.classList.add('active');
-                num.textContent = i + 1;
+                num.textContent = q.number;
                 num.onclick = () => goToQuestion(i);
                 container.appendChild(num);
             });

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tryout - UPCADEMI</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- KaTeX: render notasi matematika (rumus) langsung dari teks, tanpa gambar -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
     <style>
         * { box-sizing: border-box; }
         body { background: #f0f2f5; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -387,6 +391,19 @@
             updateStatus();
             updateRaguButton();
             document.getElementById('paketName').textContent = paketName || 'Tryout';
+
+            // Render notasi matematika (KaTeX) pada semua soal & opsi yang baru dibuat
+            if (window.renderMathInElement) {
+                renderMathInElement(container, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false },
+                        { left: '\\(', right: '\\)', display: false },
+                        { left: '\\[', right: '\\]', display: true }
+                    ],
+                    throwOnError: false
+                });
+            }
         }
 
         // ============================================================
