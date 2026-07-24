@@ -224,11 +224,45 @@
             color: var(--red);
         }
 
+        .subtes-row { margin-bottom: 16px; }
+        .subtes-row .subtes-label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
+        .subtes-row .subtes-bar-bg { background: var(--gray-bg); border-radius: 20px; height: 14px; overflow: hidden; }
+        .subtes-row .subtes-bar-fill { height: 100%; border-radius: 20px; transition: width 0.4s ease; }
+        .subtes-row .subtes-bar-fill.high { background: var(--green-light); }
+        .subtes-row .subtes-bar-fill.medium { background: #FFB74D; }
+        .subtes-row .subtes-bar-fill.low { background: var(--red-light); }
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: var(--text-gray);
         }
+
+        .notif-banner {
+            background: #E8F5E9;
+            border: 2px solid var(--green);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            animation: fadeInNotif 0.3s ease;
+        }
+        @keyframes fadeInNotif { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .notif-banner p { color: var(--green); font-weight: 600; font-size: 14px; margin: 0; }
+        .notif-banner .btn-close-notif {
+            background: none;
+            border: none;
+            color: var(--green);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+        }
+        .notif-banner .btn-close-notif:hover { opacity: 0.7; }
 
         .empty-state .icon {
             font-size: 48px;
@@ -259,7 +293,7 @@
         <div class="container">
             <a href="index.html" class="logo">
                 <img src="assets/images/logo.png" alt="UPCADEMI" style="height: 40px;">
-                <span>UPCADEMI</span>
+                UPCADEMI<span>.com</span>
             </a>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -288,6 +322,9 @@
                     <div class="avatar" id="userAvatar">U</div>
                 </div>
             </div>
+
+            <!-- Notifikasi Verifikasi Pesanan -->
+            <div id="notifContainer"></div>
 
             <!-- Stats -->
             <div class="stats-grid-user">
@@ -319,6 +356,12 @@
                 <div id="riwayatContainer">
                     <!-- JS akan generate -->
                 </div>
+            </div>
+
+            <!-- Analisis Per Subtes -->
+            <div class="riwayat" id="analisisSubtesSection" style="display:none;">
+                <h3>📊 Analisis Per Subtes</h3>
+                <div id="analisisSubtesContainer"></div>
             </div>
 
         </div>
@@ -359,6 +402,37 @@
         return allPesanan.filter(p => p.userEmail === userEmail && (p.status === 'aktif' || p.status === 'pending'));
     }
 
+    // Ubah teks tanggal format id-ID ("23/7/2026") jadi objek Date
+    function parseTanggalID(tanggalStr) {
+        if (!tanggalStr) return null;
+        const parts = tanggalStr.split('/');
+        if (parts.length !== 3) return null;
+        const [day, month, year] = parts.map(Number);
+        if (!day || !month || !year) return null;
+        return new Date(year, month - 1, day);
+    }
+
+    // Hitung tanggal akses berakhir dari tanggal pesanan + durasi (misal "3 Bulan", "1 Tahun", "30 Hari")
+    function hitungTanggalExpired(tanggalStr, durasiStr) {
+        const tanggalMulai = parseTanggalID(tanggalStr);
+        if (!tanggalMulai || !durasiStr) return null;
+
+        const match = durasiStr.match(/(\d+)\s*(hari|minggu|bulan|tahun)/i);
+        if (!match) return null;
+
+        const jumlah = parseInt(match[1], 10);
+        const satuan = match[2].toLowerCase();
+        const expired = new Date(tanggalMulai);
+
+        if (satuan === 'hari') expired.setDate(expired.getDate() + jumlah);
+        else if (satuan === 'minggu') expired.setDate(expired.getDate() + jumlah * 7);
+        else if (satuan === 'bulan') expired.setMonth(expired.getMonth() + jumlah);
+        else if (satuan === 'tahun') expired.setFullYear(expired.getFullYear() + jumlah);
+        else return null;
+
+        return expired;
+    }
+
     function renderPaketAktif() {
         const container = document.getElementById('paketAktifContainer');
         if (!container) return;
@@ -378,15 +452,32 @@
 
         container.innerHTML = paketAktif.map(item => {
             const isPending = item.status === 'pending';
-            const statusBadge = isPending
-                ? '<span class="paket-status pending">⏳ Menunggu Verifikasi</span>'
-                : '<span class="paket-status active">✅ Aktif</span>';
-            const actionButton = isPending
-                ? '<button class="btn-tryout disabled" disabled title="Menunggu verifikasi admin">⏳ Menunggu Verifikasi</button>'
-                : `<button class="btn-tryout" onclick="window.location.href='exam.html?paket=${item.paketId}'">🚀 Kerjakan Tryout</button>`;
-            const infoText = isPending
-                ? `⏳ Menunggu verifikasi admin sejak ${item.tanggal || 'hari ini'}`
-                : `✅ Aktif sejak ${item.tanggal || 'hari ini'}`;
+
+            // Cek masa akses habis atau belum (khusus paket yang sudah aktif)
+            let isExpired = false;
+            let tanggalExpired = null;
+            if (!isPending) {
+                tanggalExpired = hitungTanggalExpired(item.tanggal, item.durasi);
+                if (tanggalExpired && new Date() > tanggalExpired) isExpired = true;
+            }
+
+            let statusBadge, actionButton, infoText;
+
+            if (isPending) {
+                statusBadge = '<span class="paket-status pending">⏳ Menunggu Verifikasi</span>';
+                actionButton = '<button class="btn-tryout disabled" disabled title="Menunggu verifikasi admin">⏳ Menunggu Verifikasi</button>';
+                infoText = `⏳ Menunggu verifikasi admin sejak ${item.tanggal || 'hari ini'}`;
+            } else if (isExpired) {
+                statusBadge = '<span class="paket-status expired">⌛ Kedaluwarsa</span>';
+                actionButton = '<button class="btn-tryout disabled" disabled title="Masa akses sudah berakhir">⌛ Akses Berakhir</button>';
+                infoText = `⌛ Akses berakhir pada ${tanggalExpired.toLocaleDateString('id-ID')}`;
+            } else {
+                statusBadge = '<span class="paket-status active">✅ Aktif</span>';
+                actionButton = `<button class="btn-tryout" onclick="window.location.href='exam.html?paket=${item.paketId}'">🚀 Kerjakan Tryout</button>`;
+                infoText = tanggalExpired
+                    ? `✅ Aktif sejak ${item.tanggal || 'hari ini'} — berlaku sampai ${tanggalExpired.toLocaleDateString('id-ID')}`
+                    : `✅ Aktif sejak ${item.tanggal || 'hari ini'}`;
+            }
 
             return `
                 <div class="paket-item">
@@ -399,6 +490,92 @@
                     <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                         ${statusBadge}
                         ${actionButton}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // =============================================
+    // ===== NOTIFIKASI VERIFIKASI PESANAN =====
+    // =============================================
+
+    function renderNotifikasi() {
+        const container = document.getElementById('notifContainer');
+        if (!container) return;
+
+        const allPesanan = JSON.parse(localStorage.getItem('pesananUpcademi') || '[]');
+        const pesananAktifUser = allPesanan.filter(p => p.userEmail === userEmail && p.status === 'aktif');
+
+        const notifSeen = JSON.parse(localStorage.getItem('notifSeenPesanan') || '[]');
+        const belumDilihat = pesananAktifUser.filter(p => !notifSeen.includes(p.id));
+
+        if (belumDilihat.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        container.innerHTML = belumDilihat.map(item => `
+            <div class="notif-banner" data-id="${item.id}">
+                <p>🎉 Selamat! Pesanan <strong>${item.paketName || 'Paket Tryout'}</strong> sudah diverifikasi admin dan siap dikerjakan.</p>
+                <button class="btn-close-notif" onclick="tutupNotifikasi(${item.id})">✕</button>
+            </div>
+        `).join('');
+    }
+
+    function tutupNotifikasi(id) {
+        const notifSeen = JSON.parse(localStorage.getItem('notifSeenPesanan') || '[]');
+        if (!notifSeen.includes(id)) notifSeen.push(id);
+        localStorage.setItem('notifSeenPesanan', JSON.stringify(notifSeen));
+        renderNotifikasi();
+    }
+
+    // =============================================
+    // ===== ANALISIS PER SUBTES (TWK/TIU/TKP) =====
+    // =============================================
+
+    function renderAnalisisSubtes() {
+        const section = document.getElementById('analisisSubtesSection');
+        const container = document.getElementById('analisisSubtesContainer');
+        if (!section || !container) return;
+
+        const semuaHasil = JSON.parse(localStorage.getItem('hasilTryout') || '[]');
+        const hasilUser = semuaHasil.filter(item => item.userEmail === userEmail && item.detail);
+
+        // Kumpulkan semua soal dari semua percobaan, dikelompokkan per subtes
+        const rekap = {};
+        hasilUser.forEach(attempt => {
+            attempt.detail.forEach(q => {
+                const subtes = q.subtes;
+                if (!subtes) return; // lewati soal tanpa kategori subtes
+                if (!rekap[subtes]) rekap[subtes] = { benar: 0, total: 0 };
+                rekap[subtes].total += 1;
+                if (q.jawabanUser !== null && q.jawabanUser !== undefined && q.jawabanUser === q.correct) {
+                    rekap[subtes].benar += 1;
+                }
+            });
+        });
+
+        const subtesKeys = Object.keys(rekap);
+        if (subtesKeys.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        container.innerHTML = subtesKeys.map(subtes => {
+            const { benar, total } = rekap[subtes];
+            const persen = total > 0 ? Math.round((benar / total) * 100) : 0;
+            const level = persen >= 80 ? 'high' : persen >= 60 ? 'medium' : 'low';
+
+            return `
+                <div class="subtes-row">
+                    <div class="subtes-label">
+                        <span>${subtes}</span>
+                        <span>${benar} / ${total} soal benar (${persen}%)</span>
+                    </div>
+                    <div class="subtes-bar-bg">
+                        <div class="subtes-bar-fill ${level}" style="width:${persen}%;"></div>
                     </div>
                 </div>
             `;
@@ -507,7 +684,9 @@
     // =============================================
 
     document.addEventListener('DOMContentLoaded', function() {
+        renderNotifikasi();
         renderPaketAktif();
+        renderAnalisisSubtes();
         renderRiwayat();
         updateStats();
     });

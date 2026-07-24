@@ -186,7 +186,7 @@
         <div class="container">
             <a href="index.html" class="logo">
                 <img src="assets/images/logo.png" alt="UPCADEMI" style="height: 40px;">
-                <span>UPCADEMI</span>
+                UPCADEMI<span>.com</span>
             </a>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -209,7 +209,7 @@
         <div class="container">
             <div class="leaderboard-header">
                 <h1>🏆 Peringkat Siswa</h1>
-                <p>Lihat peringkat siswa berdasarkan skor tryout tertinggi</p>
+                <p>Peringkat berdasarkan skor percobaan pertama tiap paket (tidak termasuk hasil mengulang)</p>
             </div>
 
             <div class="filter-leaderboard">
@@ -292,11 +292,12 @@
                 hasil = hasil.filter(item => item.paket === filterPaket);
             }
 
-            // Kelompokkan berdasarkan user dan paket, ambil skor tertinggi
+            // Kelompokkan berdasarkan user dan paket, ambil PERCOBAAN PERTAMA saja
+            // (leaderboard menilai kemampuan asli, bukan skor hasil mengulang berkali-kali)
             const userBest = {};
             hasil.forEach(item => {
                 const key = item.userEmail + '|' + item.paket;
-                if (!userBest[key] || item.skor > userBest[key].skor) {
+                if (!userBest[key]) {
                     userBest[key] = {
                         userName: item.userName || 'User',
                         userEmail: item.userEmail,
@@ -422,7 +423,7 @@
             const userBest = {};
             filtered.forEach(item => {
                 const key = item.userEmail + '|' + item.paket;
-                if (!userBest[key] || item.skor > userBest[key].skor) {
+                if (!userBest[key]) {
                     userBest[key] = {
                         userName: item.userName || 'User',
                         userEmail: item.userEmail,

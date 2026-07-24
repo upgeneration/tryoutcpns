@@ -229,7 +229,7 @@
         <div class="container">
             <a href="index.html" class="logo">
                 <img src="assets/images/logo.png" alt="UPCADEMI" style="height: 40px;">
-                <span>UPCADEMI</span>
+                UPCADEMI<span>.com</span>
             </a>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -431,8 +431,19 @@
         }
     }
 
+    // Ubah file bukti transfer jadi base64 supaya benar-benar tersimpan (bukan cuma penanda teks)
+    function readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+            if (!file) { resolve(''); return; }
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
     // ===== HANDLE CHECKOUT (LENGKAP) =====
-    function handleCheckout() {
+    async function handleCheckout() {
         // Cek login dulu
         if (!cekLoginSebelumCheckout()) {
             return;
@@ -455,6 +466,7 @@
         // ===== SIMPAN DATA PESANAN =====
         const userEmail = localStorage.getItem('userEmail');
         const userName = localStorage.getItem('userName') || 'User';
+        const buktiBase64 = await readFileAsBase64(fileInput.files[0]);
 
         const pesanan = {
             id: Date.now(),
@@ -463,8 +475,9 @@
             paketId: paketId,
             paketName: data.name,
             harga: data.price,
+            durasi: data.duration || '',
             tanggal: new Date().toLocaleDateString('id-ID'),
-            bukti: 'uploaded',
+            bukti: buktiBase64,
             status: 'pending'
         };
 

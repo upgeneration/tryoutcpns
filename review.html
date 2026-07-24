@@ -99,6 +99,10 @@
         .question-panel .question-text img { max-width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid #E0E0E0; }
 
         .options { display: flex; flex-direction: column; gap: 10px; }
+        .options.options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .options.options-grid .option-row { flex-direction: column; text-align: center; }
+        .options.options-grid .option-img-large { width: 100%; max-width: 220px; max-height: 200px; object-fit: contain; border-radius: 8px; border: 1px solid #E0E0E0; margin-top: 8px; }
+        @media (max-width: 600px) { .options.options-grid .option-img-large { max-height: 140px; } }
         .options .option-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 15px; line-height: 1.5; }
         .options .option-row .option-label { font-weight: 700; flex-shrink: 0; }
         .options .option-row.user-correct { border-color: var(--green); background: #E8F5E9; }
@@ -258,6 +262,7 @@
                 const statusClass = status === 'correct' ? 'status-correct' : status === 'wrong' ? 'status-wrong' : 'status-empty';
 
                 let optionsHTML = '';
+                const hasImageOptions = q.optionImages && q.optionImages.some(img => img);
                 (q.options || []).forEach((opt, oi) => {
                     const isUserAns = q.jawabanUser === oi;
                     const isCorrectAns = q.correct === oi;
@@ -267,7 +272,12 @@
                     else if (isUserAns && !isCorrectAns) { rowClass = 'user-wrong'; tag = '<span class="tag tag-user">Jawaban Anda</span>'; }
                     else if (!isUserAns && isCorrectAns) { rowClass = 'correct-answer'; tag = '<span class="tag tag-correct">Kunci Jawaban</span>'; }
 
-                    let optImg = q.optionImages && q.optionImages[oi] ? `<br><img src="${q.optionImages[oi]}" style="max-width:120px; border-radius:6px; border:1px solid #E0E0E0; margin-top:4px;">` : '';
+                    let optImg = '';
+                    if (q.optionImages && q.optionImages[oi]) {
+                        optImg = hasImageOptions
+                            ? `<img src="${q.optionImages[oi]}" class="option-img-large">`
+                            : `<br><img src="${q.optionImages[oi]}" style="max-width:120px; border-radius:6px; border:1px solid #E0E0E0; margin-top:4px;">`;
+                    }
 
                     optionsHTML += `
                         <div class="option-row ${rowClass}">
@@ -286,8 +296,8 @@
                         <span class="question-number">Soal ${q.number || index + 1} dari ${totalQuestions}</span>
                         <span class="question-status ${statusClass}">${statusText}</span>
                     </div>
-                    <div class="question-text">${imageHTML}${q.text || ''}</div>
-                    <div class="options">${optionsHTML}</div>
+                    <div class="question-text">${q.text || ''}${imageHTML}</div>
+                    <div class="options${hasImageOptions ? ' options-grid' : ''}">${optionsHTML}</div>
                     <div class="pembahasan-box">
                         <button type="button" class="pembahasan-toggle" onclick="togglePembahasan(${index})">
                             <span>💡 Lihat Pembahasan</span>

@@ -38,6 +38,16 @@
         .btn-action.verify:hover { background: #1B5E20; }
         .btn-action.delete { background: var(--red); color: var(--white); }
         .btn-action.delete:hover { background: var(--red-dark); }
+        .btn-action.view { background: var(--navy); color: var(--white); }
+        .btn-action.view:hover { background: var(--navy-light); }
+        .bukti-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .bukti-modal-overlay.show { display: flex; }
+        .bukti-modal-box { background: var(--white); padding: 24px; border-radius: 16px; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .bukti-modal-box h3 { color: var(--navy); margin-bottom: 16px; }
+        .bukti-modal-box img { max-width: 100%; border-radius: 8px; border: 1px solid #E0E0E0; }
+        .bukti-modal-box p { color: var(--text-gray); font-size: 14px; }
+        .bukti-modal-box .btn-close-bukti { margin-top: 16px; padding: 10px 32px; border: none; border-radius: 8px; background: var(--gray-bg); color: var(--text-dark); font-weight: 700; cursor: pointer; }
+        .bukti-modal-box .btn-close-bukti:hover { background: #E0E0E0; }
         .form-admin { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-admin .full-width { grid-column: 1 / -1; }
         .form-admin label { font-weight: 600; font-size: 14px; color: var(--text-dark); display: block; margin-bottom: 4px; }
@@ -49,6 +59,15 @@
         .file-upload-wrapper { border: 2px dashed #E0E0E0; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; }
         .file-upload-wrapper:hover { border-color: var(--navy); background: #F5F7FA; }
         .file-upload-wrapper input[type="file"] { display: none; }
+        .search-box-admin { margin-bottom: 16px; }
+        .search-box-admin input { width: 100%; max-width: 320px; padding: 10px 14px; border: 2px solid #E0E0E0; border-radius: 8px; font-size: 14px; }
+        .search-box-admin input:focus { border-color: var(--navy); outline: none; }
+        .pagination-admin { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+        .pagination-admin button { min-width: 36px; height: 36px; border: 2px solid #E0E0E0; background: var(--white); border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-dark); }
+        .pagination-admin button:hover:not(:disabled) { border-color: var(--navy); }
+        .pagination-admin button.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+        .pagination-admin button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pagination-admin .page-info { font-size: 13px; color: var(--text-gray); margin: 0 8px; }
         @media (max-width: 992px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) { .admin-header h1 { font-size: 22px; } .stats-grid { grid-template-columns: 1fr 1fr; } .form-admin { grid-template-columns: 1fr; } .form-admin .full-width { grid-column: 1; } .admin-tabs button { padding: 8px 16px; font-size: 13px; } .admin-header { flex-direction: column; align-items: flex-start; } }
         @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
@@ -60,7 +79,7 @@
         <div class="container">
             <a href="index.html" class="logo">
                 <img src="assets/images/logo.png" alt="UPCADEMI" style="height: 40px;">
-                <span>UPCADEMI</span>
+                UPCADEMI<span>.com</span>
             </a>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -104,6 +123,9 @@
             <!-- TAB 1: Pesanan -->
             <div class="tab-content active" id="tab-orders">
                 <h3>📋 Daftar Pesanan</h3>
+                <div class="search-box-admin">
+                    <input type="text" id="searchPesanan" placeholder="🔍 Cari nama atau nama paket..." oninput="renderOrders()">
+                </div>
                 <div class="table-responsive">
                     <table>
                         <thead><tr><th>#</th><th>Nama</th><th>Paket</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -115,6 +137,9 @@
             <!-- TAB 2: Pengguna -->
             <div class="tab-content" id="tab-users">
                 <h3>👥 Daftar Pengguna</h3>
+                <div class="search-box-admin">
+                    <input type="text" id="searchUsers" placeholder="🔍 Cari nama atau email..." oninput="renderUsers()">
+                </div>
                 <div class="table-responsive">
                     <table>
                         <thead><tr><th>#</th><th>Nama</th><th>Email</th><th>Telepon</th><th>Paket Aktif</th><th>Aksi</th></tr></thead>
@@ -130,6 +155,15 @@
                     <div class="full-width">
                         <label>Pilih Paket</label>
                         <select id="paketSoal" required><option value="">-- Pilih Paket --</option></select>
+                    </div>
+                    <div class="full-width">
+                        <label>Subtes</label>
+                        <select id="subtesSoal">
+                            <option value="">-- Pilih Subtes (Opsional) --</option>
+                            <option value="TWK">TWK</option>
+                            <option value="TIU">TIU</option>
+                            <option value="TKP">TKP</option>
+                        </select>
                     </div>
                     <div class="full-width">
                         <label>Nomor Soal</label>
@@ -238,12 +272,16 @@
                 </form>
                 <hr style="margin: 30px 0; border: none; border-top: 2px solid var(--gray-bg);">
                 <h3>📋 Daftar Soal yang Tersimpan</h3>
+                <div class="search-box-admin">
+                    <input type="text" id="searchSoal" placeholder="🔍 Cari paket atau teks soal..." oninput="soalPage = 1; renderSoal();">
+                </div>
                 <div class="table-responsive">
                     <table>
                         <thead><tr><th>No</th><th>Paket</th><th>Soal</th><th>Gambar</th><th>Aksi</th></tr></thead>
                         <tbody id="soalTable"></tbody>
                     </table>
                 </div>
+                <div class="pagination-admin" id="soalPagination"></div>
             </div>
 
             <!-- TAB 4: Kelola Paket -->
@@ -254,6 +292,7 @@
                     <div><label>Kategori</label><select id="kategoriPaket" required><option value="">-- Pilih --</option><option>CPNS</option><option>UTBK</option><option>Kedinasan</option><option>Tryout</option></select></div>
                     <div><label>Harga (Rp)</label><input type="number" id="hargaPaket" placeholder="Contoh: 199000" required></div>
                     <div><label>Durasi Akses</label><input type="text" id="durasiPaket" placeholder="Contoh: 3 Bulan" value="3 Bulan" required></div>
+                    <div><label>Waktu Pengerjaan Ujian (menit)</label><input type="number" id="waktuPengerjaanPaket" placeholder="Contoh: 110" value="110" required></div>
                     <div class="full-width"><label>Deskripsi</label><textarea id="deskripsiPaket" placeholder="Deskripsi paket..." rows="2"></textarea></div>
                     <div class="full-width"><label>Fitur (pisahkan dengan koma)</label><input type="text" id="fiturPaket" placeholder="Contoh: 10 Paket Tryout, Pembahasan, Analisis"></div>
                     <div class="full-width" style="display:flex; gap:12px; flex-wrap:wrap;"><button type="submit" class="btn-submit">💾 Simpan Paket</button></div>
@@ -263,7 +302,7 @@
                 <h3>📋 Daftar Paket</h3>
                 <div class="table-responsive">
                     <table>
-                        <thead><tr><th>#</th><th>Nama Paket</th><th>Kategori</th><th>Harga</th><th>Durasi</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>#</th><th>Nama Paket</th><th>Kategori</th><th>Harga</th><th>Durasi</th><th>Waktu Ujian</th><th>Aksi</th></tr></thead>
                         <tbody id="paketTable"></tbody>
                     </table>
                 </div>
@@ -293,9 +332,18 @@
         function renderOrders() {
             const tbody = document.getElementById('ordersTable');
             if (!tbody) return;
-            const pesanan = getPesanan();
+            let pesanan = getPesanan();
+
+            const keyword = (document.getElementById('searchPesanan')?.value || '').toLowerCase().trim();
+            if (keyword) {
+                pesanan = pesanan.filter(item =>
+                    (item.userName || '').toLowerCase().includes(keyword) ||
+                    (item.paketName || '').toLowerCase().includes(keyword)
+                );
+            }
+
             if (pesanan.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-gray);">📭 Belum ada pesanan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-gray);">📭 ${keyword ? 'Tidak ada pesanan yang cocok.' : 'Belum ada pesanan.'}</td></tr>`;
                 return;
             }
             tbody.innerHTML = pesanan.map((item, index) => {
@@ -307,7 +355,7 @@
                     <td>${item.paketName || 'Paket'}</td>
                     <td>${item.tanggal || '-'}</td>
                     <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td>${item.status === 'pending' ? `<button class="btn-action verify" onclick="verifikasiPesanan(${item.id})">✅ Verifikasi</button>` : ''}<button class="btn-action delete" onclick="hapusPesanan(${item.id})">🗑️</button></td>
+                    <td>${item.bukti ? `<button class="btn-action view" onclick="lihatBukti(${item.id})">🧾 Lihat Bukti</button>` : ''}${item.status === 'pending' ? `<button class="btn-action verify" onclick="verifikasiPesanan(${item.id})">✅ Verifikasi</button>` : ''}<button class="btn-action delete" onclick="hapusPesanan(${item.id})">🗑️</button></td>
                 </tr>`;
             }).join('');
         }
@@ -317,6 +365,19 @@
             let pesanan = getPesanan();
             const index = pesanan.findIndex(p => p.id === id);
             if (index !== -1) { pesanan[index].status = 'aktif'; savePesanan(pesanan); renderOrders(); updateStats(); alert('✅ Pesanan berhasil diverifikasi!'); }
+        }
+
+        function lihatBukti(id) {
+            const pesanan = getPesanan();
+            const item = pesanan.find(p => p.id === id);
+            if (!item || !item.bukti) { alert('⚠️ Bukti transfer tidak tersedia untuk pesanan ini.'); return; }
+            document.getElementById('buktiModalImg').src = item.bukti;
+            document.getElementById('buktiModalInfo').textContent = (item.userName || 'User') + ' — ' + (item.paketName || 'Paket');
+            document.getElementById('buktiModal').classList.add('show');
+        }
+
+        function tutupBukti() {
+            document.getElementById('buktiModal').classList.remove('show');
         }
 
         function hapusPesanan(id) {
@@ -333,13 +394,23 @@
         function renderUsers() {
             const tbody = document.getElementById('usersTable');
             if (!tbody) return;
-            const users = getUsers();
+            const allUsers = getUsers();
+            let users = allUsers.map((item, originalIndex) => ({ ...item, _originalIndex: originalIndex }));
+
+            const keyword = (document.getElementById('searchUsers')?.value || '').toLowerCase().trim();
+            if (keyword) {
+                users = users.filter(item =>
+                    (item.name || '').toLowerCase().includes(keyword) ||
+                    (item.email || '').toLowerCase().includes(keyword)
+                );
+            }
+
             if (users.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-gray);">👤 Belum ada pengguna terdaftar.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-gray);">👤 ${keyword ? 'Tidak ada pengguna yang cocok.' : 'Belum ada pengguna terdaftar.'}</td></tr>`;
                 return;
             }
             tbody.innerHTML = users.map((item, index) => {
-                return `<tr><td>${index + 1}</td><td>${item.name || '-'}</td><td>${item.email || '-'}</td><td>${item.phone || '-'}</td><td>-</td><td><button class="btn-action delete" onclick="deleteUser(${index})">🗑️</button></td></tr>`;
+                return `<tr><td>${index + 1}</td><td>${item.name || '-'}</td><td>${item.email || '-'}</td><td>${item.phone || '-'}</td><td>-</td><td><button class="btn-action delete" onclick="deleteUser(${item._originalIndex})">🗑️</button></td></tr>`;
             }).join('');
         }
 
@@ -355,32 +426,90 @@
         // ===== RENDER SOAL =====
         // =============================================
 
+        let soalPage = 1;
+        const soalPerPage = 25;
+
         function renderSoal() {
             const tbody = document.getElementById('soalTable');
             if (!tbody) return;
-            const soal = getSoal();
+            let soal = getSoal();
+
+            const keyword = (document.getElementById('searchSoal')?.value || '').toLowerCase().trim();
+            if (keyword) {
+                soal = soal.filter(item =>
+                    (item.paket || '').toLowerCase().includes(keyword) ||
+                    (item.soal || '').toLowerCase().includes(keyword)
+                );
+            }
+
             if (soal.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-gray);">📝 Belum ada soal.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-gray);">📝 ${keyword ? 'Tidak ada soal yang cocok.' : 'Belum ada soal.'}</td></tr>`;
+                document.getElementById('soalPagination').innerHTML = '';
                 return;
             }
-            tbody.innerHTML = soal.map((item, index) => {
-                return `<tr><td>${index + 1}</td><td>${item.paket || '-'}</td><td>${item.soal ? item.soal.substring(0, 30) + (item.soal.length > 30 ? '...' : '') : '-'}</td><td>${item.gambar ? '✅' : '-'}</td><td><button class="btn-action delete" onclick="deleteSoal(${index})">🗑️</button></td></tr>`;
+
+            const totalPages = Math.max(1, Math.ceil(soal.length / soalPerPage));
+            if (soalPage > totalPages) soalPage = totalPages;
+            if (soalPage < 1) soalPage = 1;
+
+            const startIndex = (soalPage - 1) * soalPerPage;
+            const pageItems = soal.slice(startIndex, startIndex + soalPerPage);
+
+            tbody.innerHTML = pageItems.map((item, i) => {
+                const index = startIndex + i;
+                return `<tr><td>${index + 1}</td><td>${item.paket || '-'}</td><td>${item.soal ? item.soal.substring(0, 30) + (item.soal.length > 30 ? '...' : '') : '-'}</td><td>${item.gambar ? '✅' : '-'}</td><td><button class="btn-action delete" onclick="deleteSoal(${item.id})">🗑️</button></td></tr>`;
             }).join('');
+
+            renderSoalPagination(totalPages, soal.length);
         }
 
-        function deleteSoal(index) {
+        function renderSoalPagination(totalPages, totalItems) {
+            const container = document.getElementById('soalPagination');
+            if (!container) return;
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html = `<button onclick="goToSoalPage(${soalPage - 1})" ${soalPage === 1 ? 'disabled' : ''}>‹</button>`;
+            for (let p = 1; p <= totalPages; p++) {
+                if (p === 1 || p === totalPages || Math.abs(p - soalPage) <= 1) {
+                    html += `<button class="${p === soalPage ? 'active' : ''}" onclick="goToSoalPage(${p})">${p}</button>`;
+                } else if (Math.abs(p - soalPage) === 2) {
+                    html += `<span class="page-info">…</span>`;
+                }
+            }
+            html += `<button onclick="goToSoalPage(${soalPage + 1})" ${soalPage === totalPages ? 'disabled' : ''}>›</button>`;
+            html += `<span class="page-info">${totalItems} soal total</span>`;
+            container.innerHTML = html;
+        }
+
+        function goToSoalPage(page) {
+            soalPage = page;
+            renderSoal();
+        }
+
+        function deleteSoal(id) {
             if (!confirm('Yakin ingin menghapus soal ini?')) return;
             let soal = getSoal();
-            soal.splice(index, 1);
+            soal = soal.filter(s => s.id !== id);
             saveSoal(soal);
             renderSoal();
+        }
+
+        // Ubah file gambar jadi base64 supaya benar-benar tersimpan (bukan cuma nama file)
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) { resolve(''); return; }
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
         // =============================================
         // ===== TAMBAH SOAL =====
         // =============================================
 
-        function tambahSoal(e) {
+        async function tambahSoal(e) {
             e.preventDefault();
 
             const paket = document.getElementById('paketSoal');
@@ -396,9 +525,9 @@
             }
 
             const jawabanText = jawabanSelect.value;
-            const jawabanGambar = gambarJawaban.files[0] ? gambarJawaban.files[0].name : '';
+            const adaJawabanGambar = gambarJawaban.files[0] ? true : false;
 
-            if (!jawabanText && !jawabanGambar) {
+            if (!jawabanText && !adaJawabanGambar) {
                 alert('⚠️ Pilih opsi jawaban (A-E) atau upload gambar jawaban!');
                 return false;
             }
@@ -409,23 +538,36 @@
             const opsiD = document.getElementById('opsiD').value || '';
             const opsiE = document.getElementById('opsiE').value || '';
 
-            const gambarOpsiA = document.getElementById('gambarOpsiA').files[0] ? document.getElementById('gambarOpsiA').files[0].name : '';
-            const gambarOpsiB = document.getElementById('gambarOpsiB').files[0] ? document.getElementById('gambarOpsiB').files[0].name : '';
-            const gambarOpsiC = document.getElementById('gambarOpsiC').files[0] ? document.getElementById('gambarOpsiC').files[0].name : '';
-            const gambarOpsiD = document.getElementById('gambarOpsiD').files[0] ? document.getElementById('gambarOpsiD').files[0].name : '';
-            const gambarOpsiE = document.getElementById('gambarOpsiE').files[0] ? document.getElementById('gambarOpsiE').files[0].name : '';
+            const fileOpsiA = document.getElementById('gambarOpsiA').files[0];
+            const fileOpsiB = document.getElementById('gambarOpsiB').files[0];
+            const fileOpsiC = document.getElementById('gambarOpsiC').files[0];
+            const fileOpsiD = document.getElementById('gambarOpsiD').files[0];
+            const fileOpsiE = document.getElementById('gambarOpsiE').files[0];
 
-            if (!opsiA && !gambarOpsiA) {
+            if (!opsiA && !fileOpsiA) {
                 alert('⚠️ Opsi A harus diisi (teks atau gambar)!');
                 return false;
             }
 
+            // Ubah semua gambar yang diupload jadi base64 (tersimpan permanen, tidak butuh hosting file terpisah)
+            const [gambarSoal, gambarOpsiA, gambarOpsiB, gambarOpsiC, gambarOpsiD, gambarOpsiE, jawabanGambar, pembahasanGambar] = await Promise.all([
+                readFileAsBase64(document.getElementById('fileSoal').files[0]),
+                readFileAsBase64(fileOpsiA),
+                readFileAsBase64(fileOpsiB),
+                readFileAsBase64(fileOpsiC),
+                readFileAsBase64(fileOpsiD),
+                readFileAsBase64(fileOpsiE),
+                readFileAsBase64(gambarJawaban.files[0]),
+                readFileAsBase64(document.getElementById('filePembahasan').files[0])
+            ]);
+
             const soalBaru = {
                 id: Date.now(),
                 paket: paket.value,
+                subtes: document.getElementById('subtesSoal').value || '',
                 nomor: nomor.value,
                 soal: teks.value,
-                gambar: '',
+                gambar: gambarSoal,
                 opsiA: opsiA,
                 opsiB: opsiB,
                 opsiC: opsiC,
@@ -439,7 +581,7 @@
                 jawaban: jawabanText || 'GAMBAR',
                 jawabanGambar: jawabanGambar,
                 pembahasan: pembahasan.value || '',
-                pembahasanGambar: ''
+                pembahasanGambar: pembahasanGambar
             };
 
             let soal = getSoal();
@@ -476,6 +618,7 @@
                             const soalBaru = {
                                 id: Date.now() + index,
                                 paket: row['Paket'] || row['paket'] || 'Paket Tryout',
+                                subtes: row['Subtes'] || row['subtes'] || '',
                                 soal: row['Soal'] || row['soal'] || 'Soal',
                                 gambar: row['Gambar'] || row['gambar'] || '',
                                 opsiA: row['Opsi A'] || row['opsi a'] || '',
@@ -521,7 +664,8 @@
                                 jawaban: row[8] || '',
                                 jawabanGambar: '',
                                 pembahasan: row[9] || '',
-                                pembahasanGambar: row[10] || ''
+                                pembahasanGambar: row[10] || '',
+                                subtes: row[11] || ''
                             };
                             if (soalBaru.soal && soalBaru.opsiA) { soal.push(soalBaru); jumlahTambah++; }
                         }
@@ -546,11 +690,11 @@
             if (!tbody) return;
             const paket = getPaket();
             if (paket.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-gray);">📭 Belum ada paket.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-gray);">📭 Belum ada paket.</td></tr>`;
                 return;
             }
             tbody.innerHTML = paket.map((item, index) => {
-                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>Rp${item.price}</td><td>${item.duration}</td><td><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
+                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>Rp${item.price}</td><td>${item.duration}</td><td>${item.waktuPengerjaan || 110} menit</td><td><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
             }).join('');
             const selectPaket = document.getElementById('paketSoal');
             if (selectPaket) {
@@ -567,11 +711,12 @@
             const kategori = document.getElementById('kategoriPaket');
             const harga = document.getElementById('hargaPaket');
             const durasi = document.getElementById('durasiPaket');
+            const waktuPengerjaan = document.getElementById('waktuPengerjaanPaket');
             const deskripsi = document.getElementById('deskripsiPaket');
             const fitur = document.getElementById('fiturPaket');
             const alert = document.getElementById('paketAlert');
             alert.style.display = 'none';
-            if (!nama.value.trim() || !kategori.value || !harga.value || !durasi.value.trim()) {
+            if (!nama.value.trim() || !kategori.value || !harga.value || !durasi.value.trim() || !waktuPengerjaan.value) {
                 alert.textContent = '⚠️ Semua field wajib diisi!';
                 alert.style.display = 'block';
                 alert.style.background = '#FFEBEE';
@@ -584,6 +729,7 @@
                 category: kategori.value,
                 price: harga.value,
                 duration: durasi.value.trim(),
+                waktuPengerjaan: parseInt(waktuPengerjaan.value, 10) || 110,
                 description: deskripsi.value.trim(),
                 features: fitur.value.trim()
             };
@@ -596,6 +742,7 @@
             alert.style.color = '#2E7D32';
             document.getElementById('formPaket').reset();
             document.getElementById('durasiPaket').value = '3 Bulan';
+            document.getElementById('waktuPengerjaanPaket').value = '110';
             renderPaket();
             return false;
         }
@@ -738,5 +885,16 @@
             updateNavbar();
         });
     </script>
+
+    <div class="bukti-modal-overlay" id="buktiModal">
+        <div class="bukti-modal-box">
+            <h3>🧾 Bukti Transfer</h3>
+            <p id="buktiModalInfo" style="margin-bottom:12px;"></p>
+            <img id="buktiModalImg" src="" alt="Bukti Transfer">
+            <div>
+                <button class="btn-close-bukti" onclick="tutupBukti()">Tutup</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

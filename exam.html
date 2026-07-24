@@ -90,6 +90,10 @@
         .question-panel .question-text img { max-width: 100%; border-radius: 8px; margin: 12px 0; border: 1px solid #E0E0E0; }
 
         .options { display: flex; flex-direction: column; gap: 10px; }
+        .options.options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .options.options-grid label { flex-direction: column; text-align: center; padding: 14px; }
+        .options.options-grid .option-img-large { width: 100%; max-width: 220px; max-height: 200px; object-fit: contain; border-radius: 8px; border: 1px solid #E0E0E0; margin-top: 8px; }
+        @media (max-width: 600px) { .options.options-grid .option-img-large { max-height: 140px; } }
         .options label { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 15px; line-height: 1.5; }
         .options label:hover { border-color: var(--navy); background: #F5F7FA; }
         .options label:has(input:checked) { border-color: var(--navy); background: #E8EAF6; }
@@ -238,6 +242,38 @@
         const urlParams = new URLSearchParams(window.location.search);
         const paketId = urlParams.get('paket');
 
+        // ===== CEK AKSES: apakah masa berlaku paket ini masih aktif (belum kedaluwarsa)? =====
+        (function() {
+            const userEmailCheck = localStorage.getItem('userEmail');
+            if (!userEmailCheck) return;
+
+            const semuaPesananCheck = JSON.parse(localStorage.getItem('pesananUpcademi') || '[]');
+            const pesananPaket = semuaPesananCheck.find(p => p.userEmail === userEmailCheck && String(p.paketId) === String(paketId) && p.status === 'aktif');
+
+            if (pesananPaket && pesananPaket.durasi) {
+                const parts = (pesananPaket.tanggal || '').split('/');
+                if (parts.length === 3) {
+                    const [d, m, y] = parts.map(Number);
+                    const mulai = new Date(y, m - 1, d);
+                    const match = pesananPaket.durasi.match(/(\d+)\s*(hari|minggu|bulan|tahun)/i);
+                    if (match) {
+                        const jumlah = parseInt(match[1], 10);
+                        const satuan = match[2].toLowerCase();
+                        const expired = new Date(mulai);
+                        if (satuan === 'hari') expired.setDate(expired.getDate() + jumlah);
+                        else if (satuan === 'minggu') expired.setDate(expired.getDate() + jumlah * 7);
+                        else if (satuan === 'bulan') expired.setMonth(expired.getMonth() + jumlah);
+                        else if (satuan === 'tahun') expired.setFullYear(expired.getFullYear() + jumlah);
+
+                        if (new Date() > expired) {
+                            alert('⌛ Masa akses paket ini sudah berakhir pada ' + expired.toLocaleDateString('id-ID') + '.');
+                            window.location.href = 'dashboard-user.html';
+                        }
+                    }
+                }
+            }
+        })();
+
         const semuaSoal = JSON.parse(localStorage.getItem('soalUpcademi') || '[]');
         const semuaPaket = JSON.parse(localStorage.getItem('paketUpcademi') || '[]');
 
@@ -273,10 +309,11 @@
             return {
                 id: q.id || i,
                 number: q.nomor || i + 1,
+                subtes: q.subtes || '',
                 text: q.soal || q.text || 'Soal tidak tersedia',
                 image: q.gambar || q.image || '',
                 options: opt,
-                optionImages: q.optionImages || [null, null, null, null, null],
+                optionImages: q.optionImages || [q.gambarOpsiA || null, q.gambarOpsiB || null, q.gambarOpsiC || null, q.gambarOpsiD || null, q.gambarOpsiE || null],
                 correct: correctIdx,
                 jawaban: correctIdx, // biar kompatibel
                 pembahasan: q.pembahasan || '',
@@ -293,7 +330,8 @@
         let answers = new Array(totalQuestions).fill(null);
         let ragu = new Array(totalQuestions).fill(false);
         let timerInterval = null;
-        let timeLeft = 110 * 60;
+        const menitPengerjaan = (paket && paket.waktuPengerjaan) ? parseInt(paket.waktuPengerjaan, 10) : 110;
+        let timeLeft = menitPengerjaan * 60;
 
         // ============================================================
         // 3. RENDER SOAL
@@ -310,9 +348,15 @@
 
                 let optionsHTML = '';
                 const optionLabels = ['A', 'B', 'C', 'D', 'E'];
+                const hasImageOptions = q.optionImages && q.optionImages.some(img => img);
                 q.options.forEach((opt, oi) => {
                     const checked = answers[index] === oi ? 'checked' : '';
-                    let optImg = q.optionImages && q.optionImages[oi] ? `<br><img src="${q.optionImages[oi]}" style="max-width:120px; border-radius:6px; border:1px solid #E0E0E0; margin-top:4px;">` : '';
+                    let optImg = '';
+                    if (q.optionImages && q.optionImages[oi]) {
+                        optImg = hasImageOptions
+                            ? `<img src="${q.optionImages[oi]}" class="option-img-large">`
+                            : `<br><img src="${q.optionImages[oi]}" style="max-width:120px; border-radius:6px; border:1px solid #E0E0E0; margin-top:4px;">`;
+                    }
                     optionsHTML += `
                         <label class="${checked ? 'selected' : ''}">
                             <input type="radio" name="q${index}" value="${oi}" ${checked} onchange="selectOption(${index}, ${oi})">
@@ -333,8 +377,8 @@
                         <span class="question-number">Soal ${q.number || index + 1} dari ${totalQuestions}</span>
                         <span class="question-status ${statusClass}">${statusText}</span>
                     </div>
-                    <div class="question-text">${imageHTML}${q.text}</div>
-                    <div class="options">${optionsHTML}</div>
+                    <div class="question-text">${q.text}${imageHTML}</div>
+                    <div class="options${hasImageOptions ? ' options-grid' : ''}">${optionsHTML}</div>
                 `;
                 container.appendChild(panel);
             });
@@ -475,6 +519,16 @@
             const display = document.getElementById('timerDisplay');
             const topDisplay = document.getElementById('timerTop');
 
+            // Tampilkan waktu awal sesuai durasi paket (sebelum tick pertama)
+            const formatWaktu = (detik) => {
+                const h = String(Math.floor(detik / 3600)).padStart(2, '0');
+                const m = String(Math.floor((detik % 3600) / 60)).padStart(2, '0');
+                const s = String(detik % 60).padStart(2, '0');
+                return h + ':' + m + ':' + s;
+            };
+            display.textContent = formatWaktu(timeLeft);
+            topDisplay.textContent = formatWaktu(timeLeft);
+
             timerInterval = setInterval(() => {
                 timeLeft--;
                 const h = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
@@ -570,6 +624,7 @@
         const attemptId = 'attempt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
         const detailSoal = questions.map((q, i) => ({
             number: q.number,
+            subtes: q.subtes,
             text: q.text,
             image: q.image,
             options: q.options,

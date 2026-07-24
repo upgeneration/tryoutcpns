@@ -174,7 +174,7 @@
         <div class="container">
             <a href="index.html" class="logo">
                 <img src="assets/images/logo.png" alt="UPCADEMI" style="height: 40px;">
-                <span>UPCADEMI</span>
+                UPCADEMI<span>.com</span>
             </a>
             <div class="hamburger" onclick="toggleMenu()">
                 <span></span>
@@ -296,6 +296,29 @@
             status = 'salah';
         }
 
+        const options = [
+            q.opsiA || '-',
+            q.opsiB || '-',
+            q.opsiC || '-',
+            q.opsiD || '-',
+            q.opsiE || '-'
+        ];
+        const optionImages = [q.gambarOpsiA, q.gambarOpsiB, q.gambarOpsiC, q.gambarOpsiD, q.gambarOpsiE];
+
+        let userAnswerText = 'Tidak dijawab';
+        if (userAns !== null && options[userAns]) {
+            const userOptImg = optionImages[userAns] ? `<br><img src="${optionImages[userAns]}" style="max-width:150px; border-radius:6px; border:1px solid #E0E0E0; margin-top:4px;">` : '';
+            userAnswerText = optionLabels[userAns] + '. ' + options[userAns] + userOptImg;
+        }
+
+        const correctOptImg = optionImages[correctAns] ? `<br><img src="${optionImages[correctAns]}" style="max-width:150px; border-radius:6px; border:1px solid #E0E0E0; margin-top:4px;">` : '';
+        const correctAnswerText = options[correctAns] ?
+            optionLabels[correctAns] + '. ' + options[correctAns] + correctOptImg :
+            'Tidak tersedia';
+
+        const imageHTML = q.gambar ? `<img src="${q.gambar}" style="max-width:100%; border-radius:8px; margin:8px 0; border:1px solid #E0E0E0;">` : '';
+        const pembahasanImageHTML = q.pembahasanGambar ? `<img src="${q.pembahasanGambar}" style="max-width:100%; border-radius:8px; margin:8px 0; border:1px solid #E0E0E0;">` : '';
+
         const card = document.createElement('div');
         card.className = 'soal-card' + (status === 'salah' ? ' wrong' : '');
 
@@ -304,35 +327,17 @@
         const statusClass = status === 'benar' ? 'benar' : 
                            status === 'salah' ? 'salah' : '';
 
-        const options = [
-            q.opsiA || '-',
-            q.opsiB || '-',
-            q.opsiC || '-',
-            q.opsiD || '-',
-            q.opsiE || '-'
-        ];
-
-        let userAnswerText = 'Tidak dijawab';
-        if (userAns !== null && options[userAns]) {
-            userAnswerText = optionLabels[userAns] + '. ' + options[userAns];
-        }
-
-        const correctAnswerText = options[correctAns] ? 
-            optionLabels[correctAns] + '. ' + options[correctAns] : 
-            'Tidak tersedia';
-
-        const imageHTML = q.gambar ? `<img src="${q.gambar}" style="max-width:100%; border-radius:8px; margin:8px 0; border:1px solid #E0E0E0;">` : '';
-
         card.innerHTML = `
             <div class="soal-header">
                 <span>Soal ${q.number || index + 1}</span>
                 <span class="status ${statusClass}">${statusText}</span>
             </div>
-            <div class="soal-text">${imageHTML}${q.soal || 'Soal tidak tersedia'}</div>
+            <div class="soal-text">${q.soal || 'Soal tidak tersedia'}${imageHTML}</div>
             <div class="jawaban-user">Jawaban Anda: <strong>${userAnswerText}</strong></div>
             <div class="jawaban-benar">✅ Jawaban Benar: ${correctAnswerText}</div>
             <div class="pembahasan">
                 <strong>💡 Pembahasan:</strong> ${q.pembahasan || 'Tidak ada pembahasan.'}
+                ${pembahasanImageHTML}
             </div>
         `;
 
