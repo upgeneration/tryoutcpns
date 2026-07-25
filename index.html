@@ -107,7 +107,11 @@
             const container = document.getElementById('packageGrid');
             if (!container) return;
 
-            const paket = JSON.parse(localStorage.getItem('paketUpcademi') || '[]');
+            const semuaPaket = JSON.parse(localStorage.getItem('paketUpcademi') || '[]');
+            const paket = semuaPaket
+                .filter(item => item.tampilDiBeranda !== false)
+                .map((item, i) => ({ ...item, _urutan: item.urutanTampil !== undefined ? item.urutanTampil : i }))
+                .sort((a, b) => a._urutan - b._urutan);
 
             if (paket.length === 0) {
                 container.innerHTML = `
@@ -119,8 +123,8 @@
             }
 
             container.innerHTML = paket.map((item, index) => {
-                const isPopular = index === 0 ? 'popular' : '';
-                const badgePopular = index === 0 ? '<div class="badge-popular">Paling Laris</div>' : '';
+                const isPopular = item.palingLaris ? 'popular' : '';
+                const badgePopular = item.palingLaris ? '<div class="badge-popular">Paling Laris</div>' : '';
                 const features = item.features ? item.features.split(',').map(f => `<li>${f.trim()}</li>`).join('') : '';
 
                 return `

@@ -295,6 +295,10 @@
                     <div><label>Waktu Pengerjaan Ujian (menit)</label><input type="number" id="waktuPengerjaanPaket" placeholder="Contoh: 110" value="110" required></div>
                     <div class="full-width"><label>Deskripsi</label><textarea id="deskripsiPaket" placeholder="Deskripsi paket..." rows="2"></textarea></div>
                     <div class="full-width"><label>Fitur (pisahkan dengan koma)</label><input type="text" id="fiturPaket" placeholder="Contoh: 10 Paket Tryout, Pembahasan, Analisis"></div>
+                    <div class="full-width" style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" id="tampilDiBerandaPaket" checked style="width:18px; height:18px;">
+                        <label for="tampilDiBerandaPaket" style="margin:0; cursor:pointer;">Tampilkan paket ini di halaman utama (beranda)</label>
+                    </div>
                     <div class="full-width" style="display:flex; gap:12px; flex-wrap:wrap;"><button type="submit" class="btn-submit">💾 Simpan Paket</button></div>
                 </form>
                 <div id="paketAlert" style="margin-top:12px; display:none; padding:10px 16px; border-radius:8px;"></div>
@@ -685,6 +689,14 @@
         // ===== KELOLA PAKET =====
         // =============================================
 
+        // Urutkan paket untuk tampilan (TIDAK mengubah urutan asli array di localStorage,
+        // supaya packages.html yang membaca urutan mentah tetap tidak terpengaruh sama sekali)
+        function getPaketUrut(paket) {
+            return paket
+                .map((item, i) => ({ ...item, _urutan: item.urutanTampil !== undefined ? item.urutanTampil : i }))
+                .sort((a, b) => a._urutan - b._urutan);
+        }
+
         function renderPaket() {
             const tbody = document.getElementById('paketTable');
             if (!tbody) return;
@@ -693,8 +705,17 @@
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-gray);">📭 Belum ada paket.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = paket.map((item, index) => {
-                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>Rp${item.price}</td><td>${item.duration}</td><td>${item.waktuPengerjaan || 110} menit</td><td><button class="btn-action view" onclick="window.open('preview.html?paket=${item.id}', '_blank')">👁️ Preview</button><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
+            const paketUrut = getPaketUrut(paket);
+            tbody.innerHTML = paketUrut.map((item, index) => {
+                const tampil = item.tampilDiBeranda !== false; // default tampil kalau belum pernah diatur
+                const toggleBtn = tampil
+                    ? `<button class="btn-action" style="background:#E8F5E9; color:#2E7D32;" onclick="toggleTampilBeranda(${item.id})" title="Klik untuk sembunyikan dari beranda">👁️ Tampil</button>`
+                    : `<button class="btn-action" style="background:#F5F5F5; color:#757575;" onclick="toggleTampilBeranda(${item.id})" title="Klik untuk tampilkan di beranda">🚫 Disembunyikan</button>`;
+                const larisBtn = item.palingLaris
+                    ? `<button class="btn-action" style="background:#FFF3E0; color:#FF9800;" onclick="toggleLaris(${item.id})" title="Klik untuk lepas badge Paling Laris">⭐ Paling Laris</button>`
+                    : `<button class="btn-action" style="background:#F5F5F5; color:#757575;" onclick="toggleLaris(${item.id})" title="Klik untuk jadikan Paling Laris">☆ Jadikan Laris</button>`;
+                const urutBtn = `<button class="btn-action" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''} onclick="pindahUrutanPaket(${item.id}, -1)" title="Naikkan urutan di beranda">▲</button><button class="btn-action" ${index === paketUrut.length - 1 ? 'disabled style="opacity:0.3;"' : ''} onclick="pindahUrutanPaket(${item.id}, 1)" title="Turunkan urutan di beranda">▼</button>`;
+                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>Rp${item.price}</td><td>${item.duration}</td><td>${item.waktuPengerjaan || 110} menit</td><td style="white-space:nowrap;">${urutBtn}${toggleBtn}${larisBtn}<button class="btn-action view" onclick="window.open('preview.html?paket=${item.id}', '_blank')">👁️ Preview</button><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
             }).join('');
             const selectPaket = document.getElementById('paketSoal');
             if (selectPaket) {
@@ -703,6 +724,40 @@
                 paket.forEach(p => { selectPaket.innerHTML += `<option value="${p.name}">${p.name}</option>`; });
                 if (currentValue) selectPaket.value = currentValue;
             }
+        }
+
+        function toggleLaris(id) {
+            let paket = getPaket();
+            const target = paket.find(item => item.id === id);
+            if (!target) return;
+            const jadikanLaris = !target.palingLaris;
+            // Hanya satu paket yang boleh berstatus Paling Laris di satu waktu
+            paket = paket.map(item => ({ ...item, palingLaris: item.id === id ? jadikanLaris : false }));
+            savePaket(paket);
+            renderPaket();
+        }
+
+        function pindahUrutanPaket(id, arah) {
+            let paket = getPaket();
+            const paketUrut = getPaketUrut(paket);
+            const posisi = paketUrut.findIndex(item => item.id === id);
+            const posisiTukar = posisi + arah;
+            if (posisiTukar < 0 || posisiTukar >= paketUrut.length) return;
+
+            // Normalisasi seluruh urutan jadi angka 0..N-1 berurutan, lalu tukar posisi yang dipilih
+            paketUrut.forEach((item, i) => { item._urutan = i; });
+            const tmp = paketUrut[posisi]._urutan;
+            paketUrut[posisi]._urutan = paketUrut[posisiTukar]._urutan;
+            paketUrut[posisiTukar]._urutan = tmp;
+
+            // Simpan nilai urutanTampil baru ke array asli TANPA mengubah posisi fisik array
+            // (packages.html membaca urutan mentah array ini, jadi urutan fisiknya harus tetap utuh)
+            const urutanMap = {};
+            paketUrut.forEach(item => { urutanMap[item.id] = item._urutan; });
+            paket = paket.map(item => ({ ...item, urutanTampil: urutanMap[item.id] }));
+
+            savePaket(paket);
+            renderPaket();
         }
 
         function tambahPaket(e) {
@@ -723,6 +778,7 @@
                 alert.style.color = '#B71C1C';
                 return false;
             }
+            const paketLama = getPaket();
             const paketBaru = {
                 id: Date.now(),
                 name: nama.value.trim(),
@@ -731,9 +787,12 @@
                 duration: durasi.value.trim(),
                 waktuPengerjaan: parseInt(waktuPengerjaan.value, 10) || 110,
                 description: deskripsi.value.trim(),
-                features: fitur.value.trim()
+                features: fitur.value.trim(),
+                tampilDiBeranda: document.getElementById('tampilDiBerandaPaket').checked,
+                urutanTampil: paketLama.length,
+                palingLaris: false
             };
-            const paket = getPaket();
+            const paket = paketLama;
             paket.push(paketBaru);
             savePaket(paket);
             alert.textContent = '✅ Paket "' + nama.value + '" berhasil ditambahkan!';
@@ -751,6 +810,16 @@
             if (!confirm('Yakin ingin menghapus paket ini?')) return;
             let paket = getPaket();
             paket = paket.filter(item => item.id !== id);
+            savePaket(paket);
+            renderPaket();
+        }
+
+        function toggleTampilBeranda(id) {
+            let paket = getPaket();
+            const index = paket.findIndex(item => item.id === id);
+            if (index === -1) return;
+            const tampilSaatIni = paket[index].tampilDiBeranda !== false;
+            paket[index].tampilDiBeranda = !tampilSaatIni;
             savePaket(paket);
             renderPaket();
         }
