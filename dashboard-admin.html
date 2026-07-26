@@ -336,7 +336,7 @@
         function renderOrders() {
             const tbody = document.getElementById('ordersTable');
             if (!tbody) return;
-            let pesanan = getPesanan();
+            let pesanan = getPesanan().slice().sort((a, b) => b.id - a.id);
 
             const keyword = (document.getElementById('searchPesanan')?.value || '').toLowerCase().trim();
             if (keyword) {
@@ -436,7 +436,7 @@
         function renderSoal() {
             const tbody = document.getElementById('soalTable');
             if (!tbody) return;
-            let soal = getSoal();
+            let soal = getSoal().slice().sort((a, b) => b.id - a.id);
 
             const keyword = (document.getElementById('searchSoal')?.value || '').toLowerCase().trim();
             if (keyword) {

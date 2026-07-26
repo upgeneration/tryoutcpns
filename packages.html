@@ -91,7 +91,7 @@
             const container = document.getElementById('packageGrid');
             if (!container) return;
 
-            const paket = JSON.parse(localStorage.getItem('paketUpcademi') || '[]');
+            const paket = JSON.parse(localStorage.getItem('paketUpcademi') || '[]').slice().sort((a, b) => b.id - a.id);
 
             if (paket.length === 0) {
                 container.innerHTML = `
