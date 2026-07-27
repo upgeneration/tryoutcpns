@@ -399,7 +399,9 @@
 
     function getPesananUser() {
         const allPesanan = JSON.parse(localStorage.getItem('pesananUpcademi') || '[]');
-        return allPesanan.filter(p => p.userEmail === userEmail && (p.status === 'aktif' || p.status === 'pending'));
+        return allPesanan
+            .filter(p => p.userEmail === userEmail && (p.status === 'aktif' || p.status === 'pending'))
+            .sort((a, b) => b.id - a.id);
     }
 
     // Ubah teks tanggal format id-ID ("23/7/2026") jadi objek Date
