@@ -290,7 +290,7 @@
                 <form class="form-admin" id="formPaket" onsubmit="return tambahPaket(event)">
                     <div><label>Nama Paket</label><input type="text" id="namaPaket" placeholder="Contoh: CPNS 2026" required></div>
                     <div><label>Kategori</label><select id="kategoriPaket" required><option value="">-- Pilih --</option><option>CPNS</option><option>UTBK</option><option>Kedinasan</option><option>Tryout</option></select></div>
-                    <div><label>Harga (Rp)</label><input type="number" id="hargaPaket" placeholder="Contoh: 199000 (isi 0 untuk paket gratis)" required></div>
+                    <div><label>Harga (Rp)</label><input type="number" id="hargaPaket" placeholder="Contoh: 199000" required></div>
                     <div><label>Durasi Akses</label><input type="text" id="durasiPaket" placeholder="Contoh: 3 Bulan" value="3 Bulan" required></div>
                     <div><label>Waktu Pengerjaan Ujian (menit)</label><input type="number" id="waktuPengerjaanPaket" placeholder="Contoh: 110" value="110" required></div>
                     <div class="full-width"><label>Deskripsi</label><textarea id="deskripsiPaket" placeholder="Deskripsi paket..." rows="2"></textarea></div>
@@ -374,9 +374,7 @@
         function lihatBukti(id) {
             const pesanan = getPesanan();
             const item = pesanan.find(p => p.id === id);
-            if (!item || !item.bukti) { alert('⚠️ Bukti tidak tersedia untuk pesanan ini.'); return; }
-            const isGratis = (parseInt(item.harga, 10) || 0) === 0;
-            document.getElementById('buktiModalTitle').textContent = isGratis ? '🎵 Bukti Follow TikTok' : '🧾 Bukti Transfer';
+            if (!item || !item.bukti) { alert('⚠️ Bukti transfer tidak tersedia untuk pesanan ini.'); return; }
             document.getElementById('buktiModalImg').src = item.bukti;
             document.getElementById('buktiModalInfo').textContent = (item.userName || 'User') + ' — ' + (item.paketName || 'Paket');
             document.getElementById('buktiModal').classList.add('show');
@@ -717,7 +715,7 @@
                     ? `<button class="btn-action" style="background:#FFF3E0; color:#FF9800;" onclick="toggleLaris(${item.id})" title="Klik untuk lepas badge Paling Laris">⭐ Paling Laris</button>`
                     : `<button class="btn-action" style="background:#F5F5F5; color:#757575;" onclick="toggleLaris(${item.id})" title="Klik untuk jadikan Paling Laris">☆ Jadikan Laris</button>`;
                 const urutBtn = `<button class="btn-action" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''} onclick="pindahUrutanPaket(${item.id}, -1)" title="Naikkan urutan di beranda">▲</button><button class="btn-action" ${index === paketUrut.length - 1 ? 'disabled style="opacity:0.3;"' : ''} onclick="pindahUrutanPaket(${item.id}, 1)" title="Turunkan urutan di beranda">▼</button>`;
-                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>${formatHarga(item.price)}</td><td>${item.duration}</td><td>${item.waktuPengerjaan || 110} menit</td><td style="white-space:nowrap;">${urutBtn}${toggleBtn}${larisBtn}<button class="btn-action view" onclick="window.open('preview.html?paket=${item.id}', '_blank')">👁️ Preview</button><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
+                return `<tr><td>${index + 1}</td><td><strong>${item.name}</strong></td><td>${item.category}</td><td>Rp${item.price}</td><td>${item.duration}</td><td>${item.waktuPengerjaan || 110} menit</td><td style="white-space:nowrap;">${urutBtn}${toggleBtn}${larisBtn}<button class="btn-action view" onclick="window.open('preview.html?paket=${item.id}', '_blank')">👁️ Preview</button><button class="btn-action delete" onclick="hapusPaket(${item.id})">🗑️</button></td></tr>`;
             }).join('');
             const selectPaket = document.getElementById('paketSoal');
             if (selectPaket) {
@@ -959,7 +957,7 @@
 
     <div class="bukti-modal-overlay" id="buktiModal">
         <div class="bukti-modal-box">
-            <h3 id="buktiModalTitle">🧾 Bukti Transfer</h3>
+            <h3>🧾 Bukti Transfer</h3>
             <p id="buktiModalInfo" style="margin-bottom:12px;"></p>
             <img id="buktiModalImg" src="" alt="Bukti Transfer">
             <div>

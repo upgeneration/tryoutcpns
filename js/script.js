@@ -272,16 +272,6 @@ function cekLoginKomentar() {
 }
 
 // ==========================================
-// ===== FORMAT HARGA (tampilkan "Gratis" untuk harga 0) =====
-// ==========================================
-
-function formatHarga(price) {
-    const angka = parseInt(price, 10) || 0;
-    if (angka === 0) return 'Gratis';
-    return 'Rp' + angka.toLocaleString('id-ID');
-}
-
-// ==========================================
 // ===== JALANKAN SAAT HALAMAN LOAD =====
 // ==========================================
 

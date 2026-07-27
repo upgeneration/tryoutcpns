@@ -278,75 +278,48 @@
                     <h3>💳 Pilih Metode Pembayaran</h3>
 
                     <div class="alert alert-success" id="alert-success">
-                        ✅ Bukti berhasil diupload! Kami akan verifikasi dalam 1x24 jam.
+                        ✅ Bukti transfer berhasil diupload! Kami akan verifikasi dalam 1x24 jam.
                     </div>
                     <div class="alert alert-error" id="alert-error">
-                        ⚠️ Mohon upload bukti terlebih dahulu.
+                        ⚠️ Mohon upload bukti transfer terlebih dahulu.
                     </div>
 
-                    <div id="paidPaymentSection">
-                        <!-- ===== OPSI 1: QRIS ===== -->
-                        <div style="background:var(--gray-bg); padding:20px; border-radius:12px; margin-bottom:20px;">
-                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-                                <span style="font-size:28px;">📱</span>
-                                <h4 style="color:var(--navy); margin:0;">Bayar via QRIS</h4>
-                            </div>
-                            <p style="color:var(--text-gray); font-size:14px; margin-bottom:12px;">
-                                Scan QR Code di bawah menggunakan aplikasi mobile banking atau e-wallet (OVO, DANA, ShopeePay, dll.)
-                            </p>
-                            <div style="text-align:center; padding:16px; background:white; border-radius:12px; border:2px dashed #E0E0E0;" id="qrisContainer">
-                                <img src="assets/images/qris.png" alt="QRIS UPCADEMI" style="max-width:220px; width:100%; border-radius:8px;" onerror="qrisImageMissing()">
-                            </div>
-                            <p style="color:var(--text-gray); font-size:12px; margin-top:8px; text-align:center;">
-                                Total: <strong id="qrisAmount" style="color:var(--red);">Rp199.000</strong>
-                            </p>
-                        </div>
-
-                        <!-- ===== OPSI 2: Transfer Bank ===== -->
-                        <div style="background:var(--gray-bg); padding:20px; border-radius:12px; margin-bottom:20px;">
-                            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-                                <span style="font-size:28px;">🏦</span>
-                                <h4 style="color:var(--navy); margin:0;">Transfer Bank</h4>
-                            </div>
-
-                            <div class="bank-info">
-                                <div class="bank-name">🏦 Bank Central Asia (BCA)</div>
-                                <div class="account-number">4400012208</div>
-                                <div class="account-holder">a.n. Helmi Mirza Maulana</div>
-                            </div>
-
-                            <div class="instructions">
-                                <strong>📌 Instruksi Pembayaran:</strong>
-                                <ol>
-                                    <li>Transfer sejumlah <strong id="instructionAmount">Rp199.000</strong> ke rekening di atas.</li>
-                                    <li>Upload bukti transfer di form bawah.</li>
-                                    <li>Kirim konfirmasi ke <strong>WhatsApp: 0812-3335-5227</strong></li>
-                                    <li>Paket akan aktif dalam 1x24 jam setelah verifikasi.</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ===== OPSI KHUSUS PAKET GRATIS: FOLLOW TIKTOK ===== -->
-                    <div id="freeFollowSection" style="display:none; background:var(--gray-bg); padding:20px; border-radius:12px; margin-bottom:20px;">
+                    <!-- ===== OPSI 1: QRIS ===== -->
+                    <div style="background:var(--gray-bg); padding:20px; border-radius:12px; margin-bottom:20px;">
                         <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-                            <span style="font-size:28px;">🎵</span>
-                            <h4 style="color:var(--navy); margin:0;">Follow TikTok @upcademi</h4>
+                            <span style="font-size:28px;">📱</span>
+                            <h4 style="color:var(--navy); margin:0;">Bayar via QRIS</h4>
                         </div>
                         <p style="color:var(--text-gray); font-size:14px; margin-bottom:12px;">
-                            Paket ini gratis! Sebagai gantinya, cukup follow akun TikTok kami untuk mengaktifkan akses.
+                            Scan QR Code di bawah menggunakan aplikasi mobile banking atau e-wallet (OVO, DANA, ShopeePay, dll.)
                         </p>
-                        <div style="text-align:center; margin-bottom:12px;">
-                            <a href="https://www.tiktok.com/@upcademi" target="_blank" style="display:inline-block; background:#000; color:#fff; padding:12px 28px; border-radius:8px; font-weight:700; text-decoration:none;">
-                                🎵 Follow @upcademi di TikTok
-                            </a>
+                        <div style="text-align:center; padding:16px; background:white; border-radius:12px; border:2px dashed #E0E0E0;" id="qrisContainer">
+                            <img src="assets/images/qris.png" alt="QRIS UPCADEMI" style="max-width:220px; width:100%; border-radius:8px;" onerror="qrisImageMissing()">
                         </div>
+                        <p style="color:var(--text-gray); font-size:12px; margin-top:8px; text-align:center;">
+                            Total: <strong id="qrisAmount" style="color:var(--red);">Rp199.000</strong>
+                        </p>
+                    </div>
+
+                    <!-- ===== OPSI 2: Transfer Bank ===== -->
+                    <div style="background:var(--gray-bg); padding:20px; border-radius:12px; margin-bottom:20px;">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                            <span style="font-size:28px;">🏦</span>
+                            <h4 style="color:var(--navy); margin:0;">Transfer Bank</h4>
+                        </div>
+
+                        <div class="bank-info">
+                            <div class="bank-name">🏦 Bank Central Asia (BCA)</div>
+                            <div class="account-number">4400012208</div>
+                            <div class="account-holder">a.n. Helmi Mirza Maulana</div>
+                        </div>
+
                         <div class="instructions">
-                            <strong>📌 Instruksi:</strong>
+                            <strong>📌 Instruksi Pembayaran:</strong>
                             <ol>
-                                <li>Follow akun TikTok <strong>@upcademi</strong> lewat tombol di atas.</li>
-                                <li>Screenshot halaman profil TikTok yang menunjukkan Anda sudah follow.</li>
-                                <li>Upload screenshot tersebut di form bawah.</li>
+                                <li>Transfer sejumlah <strong id="instructionAmount">Rp199.000</strong> ke rekening di atas.</li>
+                                <li>Upload bukti transfer di form bawah.</li>
+                                <li>Kirim konfirmasi ke <strong>WhatsApp: 0812-3335-5227</strong></li>
                                 <li>Paket akan aktif dalam 1x24 jam setelah verifikasi.</li>
                             </ol>
                         </div>
@@ -354,7 +327,7 @@
 
                     <!-- ===== UPLOAD BUKTI ===== -->
                     <div class="upload-section">
-                        <label for="buktiTransfer" id="uploadBuktiLabel">📤 Upload Bukti Transfer</label>
+                        <label for="buktiTransfer">📤 Upload Bukti Transfer</label>
                         <input type="file" id="buktiTransfer" accept="image/*" onchange="previewBukti(this)">
                         <div id="preview-bukti"></div>
                     </div>
@@ -363,7 +336,7 @@
                         Kirim Bukti & Selesaikan Pesanan
                     </button>
 
-                    <div class="whatsapp-info" id="whatsappInfoSection">
+                    <div class="whatsapp-info">
                         📱 Konfirmasi pembayaran via WhatsApp: 
                         <a href="https://wa.me/6281233555227?text=Saya%20telah%20transfer%20untuk%20paket%20tryout" target="_blank" style="color:#25D366; font-weight:700;">
                             0812-3335-5227
@@ -434,27 +407,9 @@
     document.getElementById('packageName').textContent = data.name;
     document.getElementById('packageCategory').textContent = data.category || 'Tryout';
     document.getElementById('packageDuration').textContent = data.duration || '3 Bulan';
-    document.getElementById('totalPrice').textContent = formatHarga(data.price);
-    document.getElementById('instructionAmount').textContent = formatHarga(data.price);
-    document.getElementById('qrisAmount').textContent = formatHarga(data.price);
-
-    // Paket gratis (harga 0): tampilkan opsi follow TikTok, sembunyikan opsi pembayaran
-    const isGratis = (parseInt(data.price, 10) || 0) === 0;
-    const paidSection = document.getElementById('paidPaymentSection');
-    const freeSection = document.getElementById('freeFollowSection');
-    const uploadLabel = document.getElementById('uploadBuktiLabel');
-    const whatsappSection = document.getElementById('whatsappInfoSection');
-    if (isGratis) {
-        if (paidSection) paidSection.style.display = 'none';
-        if (freeSection) freeSection.style.display = 'block';
-        if (uploadLabel) uploadLabel.textContent = '📤 Upload Bukti Follow TikTok';
-        if (whatsappSection) whatsappSection.style.display = 'none';
-    } else {
-        if (paidSection) paidSection.style.display = 'block';
-        if (freeSection) freeSection.style.display = 'none';
-        if (uploadLabel) uploadLabel.textContent = '📤 Upload Bukti Transfer';
-        if (whatsappSection) whatsappSection.style.display = 'block';
-    }
+    document.getElementById('totalPrice').textContent = 'Rp' + (data.price || 0).toLocaleString('id-ID');
+    document.getElementById('instructionAmount').textContent = 'Rp' + (data.price || 0).toLocaleString('id-ID');
+    document.getElementById('qrisAmount').textContent = 'Rp' + (data.price || 0).toLocaleString('id-ID');
 
     // Tampilkan pesan placeholder kalau file assets/images/qris.png belum diupload
     function qrisImageMissing() {
