@@ -112,7 +112,7 @@
                         ${badgePopular}
                         <span class="badge-category">${item.category}</span>
                         <div class="package-name">${item.name}</div>
-                        <div class="package-price">Rp${item.price} <small>/paket</small></div>
+                        <div class="package-price">${formatHarga(item.price)} <small>${parseInt(item.price,10) ? '/paket' : ''}</small></div>
                         <p class="package-desc">${item.description || 'Paket tryout terbaik untuk persiapan ujian'}</p>
                         <ul class="package-features">
                             ${features}
